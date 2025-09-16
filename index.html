@@ -450,25 +450,28 @@
       136:"str",137:"str",138:"agi"
     };
 
+    // ✅ Исправлено: звания на русском языке согласно вашему списку
     const rankNames = {
-      1: "Herald", 2: "Guardian", 3: "Crusader",
-      4: "Archon", 5: "Legend", 6: "Ancient",
-      7: "Divine", 8: "Immortal"
+      1: "Рекрут", 2: "Страж", 3: "Рыцарь",
+      4: "Герой", 5: "Легенда", 6: "Властелин",
+      7: "Божество", 8: "Титан"
     };
 
     function getHeroIconUrl(heroId) {
       return heroIconsMap[heroId] || 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/unknown.png';
     }
 
+    // ✅ Исправлено: правильный URL без пробелов + русские названия
     function getRankBadge(playerData) {
       const rankTier = playerData.rank_tier;
       if (!rankTier) return '';
 
       const tier = Math.floor(rankTier / 10);
       const star = rankTier % 10;
-      const rankName = rankNames[tier] || 'Unknown';
-      const starDisplay = tier === 8 ? '' : ` ${star}`; // Immortal без звёзд
+      const rankName = rankNames[tier] || 'Неизвестно';
+      const starDisplay = tier === 8 ? '' : ` ${star}`; // Титан без звёзд
 
+      // ✅ Исправленный URL: убраны лишние пробелы
       const iconUrl = `https://cdn.cloudflare.steamstatic.com/apps/dota2/images/medals/medal_${tier}_${tier === 8 ? 0 : star}.png`;
 
       // Если есть точный MMR — покажем его
