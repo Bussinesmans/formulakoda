@@ -49,6 +49,15 @@
   <div id="output"></div>
 
   <script>
+    let heroNames = {};
+
+    // Загружаем список героев сразу при запуске
+    fetch("https://api.opendota.com/api/heroes")
+      .then(r => r.json())
+      .then(data => {
+        data.forEach(h => heroNames[h.id] = h.localized_name);
+      });
+
     async function getStats() {
       const nickname = document.getElementById("nickname").value.trim();
       if (!nickname) return alert("Введите ник!");
@@ -58,24 +67,20 @@
 
       try {
         // Поиск по нику
-        const searchRes = await fetch(`https://api.opendota.com/api/search?q=${nickname}`);
+        const searchRes = await fetch(`https://api.opendota.com/api/search?q=${encodeURIComponent(nickname)}`);
         const searchData = await searchRes.json();
         if (!searchData.length) throw new Error("Игрок не найден!");
 
-        // Берём первого найденного
         const account_id = searchData[0].account_id;
 
-        // Загружаем инфо игрока
-        const playerRes = await fetch(`https://api.opendota.com/api/players/${account_id}`);
-        const player = await playerRes.json();
+        // Общая инфа
+        const player = await (await fetch(`https://api.opendota.com/api/players/${account_id}`)).json();
 
         // Герои
-        const heroesRes = await fetch(`https://api.opendota.com/api/players/${account_id}/heroes`);
-        const heroes = await heroesRes.json();
+        const heroes = await (await fetch(`https://api.opendota.com/api/players/${account_id}/heroes`)).json();
 
         // Последние матчи
-        const matchesRes = await fetch(`https://api.opendota.com/api/players/${account_id}/recentMatches`);
-        const matches = await matchesRes.json();
+        const matches = await (await fetch(`https://api.opendota.com/api/players/${account_id}/recentMatches`)).json();
 
         // Формируем HTML
         let html = `
@@ -88,19 +93,19 @@
         `;
 
         // Топ герои
-        html += "<h3>Топ герои</h3><table><tr><th>Герой ID</th><th>Матчей</th><th>Побед</th><th>Winrate</th></tr>";
+        html += "<h3>Топ герои</h3><table><tr><th>Герой</th><th>Матчей</th><th>Побед</th><th>Winrate</th></tr>";
         heroes.slice(0, 5).forEach(h => {
           const wr = (h.win / h.games * 100).toFixed(1);
-          html += <tr><td>${h.hero_id}</td><td>${h.games}</td><td>${h.win}</td><td>${wr}%</td></tr>;
+          html += <tr><td>${heroNames[h.hero_id] || h.hero_id}</td><td>${h.games}</td><td>${h.win}</td><td>${wr}%</td></tr>;
         });
         html += "</table>";
 
         // Последние матчи
-        html += "<h3>Последние матчи</h3><table><tr><th>Герой ID</th><th>Убийства</th><th>Смерти</th><th>Помощи</th><th>Победа</th></tr>";
+        html += "<h3>Последние матчи</h3><table><tr><th>Герой</th><th>Убийства</th><th>Смерти</th><th>Помощи</th><th>Победа</th></tr>";
         matches.slice(0, 10).forEach(m => {
           const win = m.radiant_win === (m.player_slot < 128);
           html += `<tr>
-            <td>${m.hero_id}</td>
+            <td>${heroNames[m.hero_id] || m.hero_id}</td>
             <td>${m.kills}</td>
             <td>${m.deaths}</td>
             <td>${m.assists}</td>
