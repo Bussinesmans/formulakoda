@@ -463,27 +463,36 @@
 
     // ✅ Исправлено: правильный URL без пробелов + русские названия
     function getRankBadge(playerData) {
-      const rankTier = playerData.rank_tier;
-      if (!rankTier) return '';
+  const rankTier = playerData.rank_tier;
+  if (!rankTier) return '';
 
-      const tier = Math.floor(rankTier / 10);
-      const star = rankTier % 10;
-      const rankName = rankNames[tier] || 'Неизвестно';
-      const starDisplay = tier === 8 ? '' : ` ${star}`; // Титан без звёзд
+  const tier = Math.floor(rankTier / 10);
+  const star = rankTier % 10;
+  const rankName = rankNames[tier] || 'Неизвестно';
+  const starDisplay = tier === 8 ? '' : ` ${star}`;
 
-      // ✅ Исправленный URL: убраны лишние пробелы
-      const iconUrl = `https://cdn.cloudflare.steamstatic.com/apps/dota2/images/medals/medal_${tier}_${tier === 8 ? 0 : star}.png`;
+  const iconMap = {
+    1: "https://static.wikia.nocookie.net/dota2_gamepedia/images/9/9d/SeasonalRank1.png",
+    2: "https://static.wikia.nocookie.net/dota2_gamepedia/images/2/2d/SeasonalRank2.png",
+    3: "https://static.wikia.nocookie.net/dota2_gamepedia/images/4/4d/SeasonalRank3.png",
+    4: "https://static.wikia.nocookie.net/dota2_gamepedia/images/3/3d/SeasonalRank4.png",
+    5: "https://static.wikia.nocookie.net/dota2_gamepedia/images/a/ad/SeasonalRank5.png",
+    6: "https://static.wikia.nocookie.net/dota2_gamepedia/images/6/6d/SeasonalRank6.png",
+    7: "https://static.wikia.nocookie.net/dota2_gamepedia/images/e/ed/SeasonalRank7.png",
+    8: "https://static.wikia.nocookie.net/dota2_gamepedia/images/f/fd/SeasonalRank8.png"
+  };
 
-      // Если есть точный MMR — покажем его
-      const mmr = playerData.mmr_estimate?.estimate || playerData.solo_competitive_rank || playerData.competitive_rank || '';
+  const iconUrl = iconMap[tier] || "https://static.wikia.nocookie.net/dota2_gamepedia/images/9/9d/SeasonalRank1.png";
 
-      return `
-        <span class="rank-badge">
-          <img src="${iconUrl}" alt="${rankName}" class="rank-icon" onerror="this.style.display='none'">
-          <span>${rankName}${starDisplay}${mmr ? ` (${mmr} MMR)` : ''}</span>
-        </span>
-      `;
-    }
+  const mmr = playerData.mmr_estimate?.estimate || playerData.solo_competitive_rank || playerData.competitive_rank || '';
+
+  return `
+    <span class="rank-badge">
+      <img src="${iconUrl}" alt="${rankName}" class="rank-icon" onerror="this.src='https://static.wikia.nocookie.net/dota2_gamepedia/images/9/9d/SeasonalRank1.png'; this.style.opacity='0.7'">
+      <span>${rankName}${starDisplay}${mmr ? ` (${mmr} MMR)` : ''}</span>
+    </span>
+  `;
+}
 
     let currentPage = 1, currentSearchTerm = '', currentPlayers = [];
     const elements = {
