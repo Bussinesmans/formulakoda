@@ -469,31 +469,82 @@
   const tier = Math.floor(rankTier / 10);
   const star = rankTier % 10;
   const rankName = rankNames[tier] || 'Неизвестно';
-  const starDisplay = tier === 8 ? '' : ` ${star}`;
+  const starDisplay = tier === 8 ? '' : ` ${star}`; // Титан без звёзд
 
+  // ✅ ПОЛНАЯ КАРТА ВСЕХ ЗВЁЗД ДЛЯ ВСЕХ ЗВАНИЙ — ПО ВАШИМ ССЫЛКАМ
   const iconMap = {
-    1: "https://static.wikia.nocookie.net/dota2_gamepedia/images/9/9d/SeasonalRank1.png",
-    2: "https://static.wikia.nocookie.net/dota2_gamepedia/images/2/2d/SeasonalRank2.png",
-    3: "https://static.wikia.nocookie.net/dota2_gamepedia/images/4/4d/SeasonalRank3.png",
-    4: "https://static.wikia.nocookie.net/dota2_gamepedia/images/3/3d/SeasonalRank4.png",
-    5: "https://static.wikia.nocookie.net/dota2_gamepedia/images/a/ad/SeasonalRank5.png",
-    6: "https://static.wikia.nocookie.net/dota2_gamepedia/images/6/6d/SeasonalRank6.png",
-    7: "https://static.wikia.nocookie.net/dota2_gamepedia/images/e/ed/SeasonalRank7.png",
-    8: "https://static.wikia.nocookie.net/dota2_gamepedia/images/f/fd/SeasonalRank8.png"
+    1: { // Рекрут
+      1: "https://images.steamusercontent.com/ugc/784127947978930802/6C32A581F214D87FE03F7E531DF556E46155FA35/",
+      2: "https://images.steamusercontent.com/ugc/784127947978930792/070BDB5EC27530E474DE2397CA8B4044AB0FAF04/",
+      3: "https://images.steamusercontent.com/ugc/784127947978930781/89D7E327F31715FBAF1F6E405AF1481E7CBD9E93/",
+      4: "https://images.steamusercontent.com/ugc/784127947978930768/DB7C6C49A07AEBE43DAE89A31F3B4C7EE83E4EF9/",
+      5: "https://images.steamusercontent.com/ugc/784127947978930752/2BEC3816045EB0D80C7B37EE3BFF1E604F7B4D14/"
+    },
+    2: { // Страж
+      1: "https://images.steamusercontent.com/ugc/784127947978930874/A8D7784F45F3D1E6F9A5A8882DC62E7038A0D5D1/",
+      2: "https://images.steamusercontent.com/ugc/784127947978930859/211DB567107DDC3791791DB31C4342F425D4E60E/",
+      3: "https://images.steamusercontent.com/ugc/784127947978930845/4D57C447304CE058AAD954C2D145BCCE8D61EE2C/",
+      4: "https://images.steamusercontent.com/ugc/784127947978930830/68C81B2ECCBF919A4CE8209142869CC02FBD84AA/",
+      5: "https://images.steamusercontent.com/ugc/784127947978930817/FC69B56CA685A3663936EF1A8B094DCF6EACC50E/"
+    },
+    3: { // Рыцарь
+      1: "https://images.steamusercontent.com/ugc/784127947979030165/AD3F36792D4F3099074C7D7DEE13FD3932A63567/",
+      2: "https://images.steamusercontent.com/ugc/784127947979030150/7EF2D23FC55B002DBF5F685D5F6BFABDE0407AF2/",
+      3: "https://images.steamusercontent.com/ugc/784127947979030135/5AE81FF7858B7544C73FFF4C6C472E3348E7783E/",
+      4: "https://images.steamusercontent.com/ugc/784127947979030123/86BCE8B9F9C3D1E8452F7B3900BF5027CB5ED52B/",
+      5: "https://images.steamusercontent.com/ugc/784127947979030110/67F8B9DC265D37C700EB036C0B0516A31C8297B1/"
+    },
+    4: { // Герой
+      1: "https://images.steamusercontent.com/ugc/784127947979030092/74C828BE42D827759138ACCEE779434909EB19B2/",
+      2: "https://images.steamusercontent.com/ugc/784127947979030080/494D7372FED5B6BA878429D47C430053D4F78D1C/",
+      3: "https://images.steamusercontent.com/ugc/784127947979030071/5C1D8038EFFEA365FB0DE7EE99544E7DAF005DAE/",
+      4: "https://images.steamusercontent.com/ugc/784127947979030057/C9CE4A8344F6172EA7C241A8C0033E8201605441/",
+      5: "https://images.steamusercontent.com/ugc/784127947979030037/FCD5FBDF20B40E98B5BFDF853BBB38C16EF0091E/"
+    },
+    5: { // Легенда
+      1: "https://images.steamusercontent.com/ugc/784127947979161025/AAAF6A7451EA77DCD95EA0029872DF0CBBA97DA3/",
+      2: "https://images.steamusercontent.com/ugc/784127947979161015/4CC5F2E2C5C6A9F8A3D3651035965019B7DFC0E2/",
+      3: "https://images.steamusercontent.com/ugc/784127947979160997/FD5288C62C6E58349AC526634CDB2D1718EE5E71/",
+      4: "https://images.steamusercontent.com/ugc/784127947979160985/7E94A688B6551B6324A91DACCFA1AF0309A743F5/",
+      5: "https://images.steamusercontent.com/ugc/784127947979160963/A2D5879E04FBEE0BB50FA98251E6125B1542EFC7/"
+    },
+    6: { // Властелин
+      1: "https://images.steamusercontent.com/ugc/784127947979160949/A3FD0470B24DEA3F600CBEC6D7373612195B9E1C/",
+      2: "https://images.steamusercontent.com/ugc/784127947979160936/204A6DE5BE565847FAD49DCE7BDD76014809278B/",
+      3: "https://images.steamusercontent.com/ugc/784127947979160916/524CA6610FFA990CA14EDC4E8E2C57F52A069240/",
+      4: "https://images.steamusercontent.com/ugc/784127947979160905/46BAAACB226E97534ECF1CCC68FF12DBB0EB7323/",
+      5: "https://images.steamusercontent.com/ugc/784127947979160892/E30A50B96A6A38D3428EF187C73E25F514426FA0/"
+    },
+    7: { // Божество
+      1: "https://images.steamusercontent.com/ugc/784127947979143548/34FB0A22317D36706C6E4B6D09D9353B1628B84A/",
+      2: "https://images.steamusercontent.com/ugc/784127947979143531/490446B69CD4501892BE1B4425B297306E7EB76A/",
+      3: "https://images.steamusercontent.com/ugc/784127947979143520/034060CB589B748847B849A9CF52784CC0FFA173/",
+      4: "https://images.steamusercontent.com/ugc/784127947979143507/41E45891AA48128123626D1825C62394D9F1D230/",
+      5: "https://images.steamusercontent.com/ugc/784127947979143494/DC19FDF885D6FBBDD5B837E00DA7F3ED480F68C5/"
+    },
+    8: { // Титан (Immortal) — по вашим ссылкам, хотя официально звёзд нет
+      1: "https://images.steamusercontent.com/ugc/784127947979143484/7F6C492EEEFA62E96E384B0D69AAD6FB5B486711/",
+      2: "https://images.steamusercontent.com/ugc/784127947979143465/DED7F86490F341C1EBA9B1DDF0C1671B18D092FA/",
+      3: "https://images.steamusercontent.com/ugc/784127947979143444/9F6E8824EC170F18C85C75C8C9B4664FDB2E0999/",
+      4: "https://images.steamusercontent.com/ugc/784127947979143432/FA79B836B996CF5E0DDB92B70D309661177C8004/",
+      5: "https://images.steamusercontent.com/ugc/784127947979143414/92D1793D685BA303CF0C162FDDE7B5D3E246662A/"
+    }
   };
 
-  const iconUrl = iconMap[tier] || "https://static.wikia.nocookie.net/dota2_gamepedia/images/9/9d/SeasonalRank1.png";
+  // Получаем нужную иконку по tier и star
+  const tierIcons = iconMap[tier];
+  const iconUrl = (tierIcons && tierIcons[star]) ? tierIcons[star] : iconMap[1][1]; // fallback на Рекрут 1
 
+  // Если есть точный MMR — покажем его
   const mmr = playerData.mmr_estimate?.estimate || playerData.solo_competitive_rank || playerData.competitive_rank || '';
 
   return `
     <span class="rank-badge">
-      <img src="${iconUrl}" alt="${rankName}" class="rank-icon" onerror="this.src='https://static.wikia.nocookie.net/dota2_gamepedia/images/9/9d/SeasonalRank1.png'; this.style.opacity='0.7'">
+      <img src="${iconUrl}" alt="${rankName} ${starDisplay}" class="rank-icon" onerror="this.src='${iconMap[1][1]}'; this.style.opacity='0.7'">
       <span>${rankName}${starDisplay}${mmr ? ` (${mmr} MMR)` : ''}</span>
     </span>
   `;
 }
-
     let currentPage = 1, currentSearchTerm = '', currentPlayers = [];
     const elements = {
       playerInput: document.getElementById('playerInput'),
