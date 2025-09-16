@@ -57,7 +57,34 @@
     .pagination button.active { background: var(--primary); }
     .back-button { background: var(--warning); margin-bottom: 20px; border-radius: 5px; }
     .back-button:hover { background: #e68900; }
-    .hero-icon { width: 36px; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 50%; margin-right: 10px; vertical-align: middle; }
+
+    /* УЛУЧШЕННЫЕ ИКОНКИ ГЕРОЕВ — КАК У КОНКУРЕНТОВ */
+    .hero-icon {
+      width: 36px;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-right: 10px;
+      vertical-align: middle;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: 2px solid transparent;
+    }
+    .hero-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+      z-index: 10;
+    }
+    .hero-icon.str { border-color: #e57373; } /* Сила — красный */
+    .hero-icon.agi { border-color: #81c784; } /* Ловкость — зелёный */
+    .hero-icon.int { border-color: #64b5f6; } /* Интеллект — синий */
+
+    /* Цветной KDA */
+    .kda-rating { font-weight: bold; }
+    .kda-high { color: #81c784; }
+    .kda-medium { color: #ffb74d; }
+    .kda-low { color: #e57373; }
+
     footer { text-align: center; margin-top: 40px; padding: 20px; color: var(--gray); font-size: 14px; }
     @media (max-width: 768px) {
       .profile-header, .search-box { flex-direction: column; }
@@ -264,6 +291,31 @@
       138: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/muerta.png"
     };
 
+    // Карта основных атрибутов героев (str/agi/int)
+    const heroPrimaryAttr = {
+      1: "agi", 2: "str", 3: "int", 4: "agi", 5: "int", 6: "agi",
+      7: "str", 8: "agi", 9: "agi", 10: "agi", 11: "agi", 12: "agi",
+      13: "int", 14: "str", 15: "agi", 16: "str", 17: "int", 18: "str", 19: "str",
+      20: "agi", 21: "agi", 22: "int", 23: "str", 25: "int", 26: "int",
+      27: "int", 28: "str", 29: "str", 30: "int", 31: "int", 32: "agi",
+      33: "int", 34: "int", 35: "agi", 36: "int", 37: "int", 38: "str",
+      39: "int", 40: "agi", 41: "agi", 42: "str", 43: "int", 44: "agi",
+      45: "int", 46: "agi", 47: "agi", 48: "agi", 49: "str", 50: "int",
+      51: "str", 52: "int", 53: "int", 54: "str", 55: "str", 56: "agi",
+      57: "str", 58: "int", 59: "str", 60: "str", 61: "agi", 62: "agi",
+      63: "agi", 64: "int", 65: "int", 66: "int", 67: "agi", 68: "int",
+      69: "str", 70: "agi", 71: "str", 72: "agi", 73: "str", 74: "int",
+      75: "int", 76: "int", 77: "str", 78: "str", 79: "int", 80: "agi",
+      81: "str", 82: "agi", 83: "str", 84: "int", 85: "str", 86: "int",
+      87: "int", 88: "agi", 89: "agi", 90: "int", 91: "str", 92: "int",
+      93: "agi", 94: "agi", 95: "agi", 96: "str", 97: "str", 98: "str",
+      99: "str", 100: "str", 101: "int", 102: "str", 103: "str", 104: "str",
+      105: "int", 106: "agi", 107: "str", 108: "str", 109: "agi", 110: "str",
+      111: "int", 112: "int", 113: "int", 114: "agi", 119: "int", 120: "agi",
+      121: "int", 123: "agi", 126: "int", 128: "str", 129: "str", 135: "str",
+      136: "str", 137: "str", 138: "agi"
+    };
+
     // Функция для получения URL иконки героя по его ID
     function getHeroIconUrl(heroId) {
       return heroIconsMap[heroId] || 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/unknown.png';
@@ -419,14 +471,16 @@
         <div class="profile-header">
           <img src="${profile.avatarfull || getDefaultAvatar()}" alt="Аватар" class="avatar">
           <div class="profile-info">
-            <h2 class="profile-name">${profile.personaname || 'Неизвестный игрок'}</h2>
+            <h2 class="profile-name">
+              ${profile.personaname || 'Неизвестный игрок'}
+              ${playerData.mmr_estimate?.estimate ? `<span style="font-size: 0.8em; opacity: 0.8; margin-left: 10px;">(${playerData.mmr_estimate.estimate} MMR)</span>` : ''}
+            </h2>
             <p>${profile.steamid ? 'Steam ID: ' + profile.steamid : ''}</p>
             <div class="profile-details">
               <div class="detail-item win">Победы: ${winLossData.win || 0}</div>
               <div class="detail-item lose">Поражения: ${winLossData.lose || 0}</div>
               <div class="detail-item">Всего игр: ${totalMatches}</div>
               <div class="detail-item">Винрейт: ${winRate}%</div>
-              ${playerData.mmr_estimate ? `<div class="detail-item">Примерный MMR: ${playerData.mmr_estimate.estimate || 'N/A'}</div>` : ''}
             </div>
           </div>
         </div>
@@ -468,7 +522,7 @@
         html += `
           <tr>
             <td>
-              <img src="${getHeroIconUrl(hero.hero_id)}" alt="${heroName}" class="hero-icon" onerror="this.src='https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/unknown.png'">
+              <img src="${getHeroIconUrl(hero.hero_id)}" alt="${heroName}" title="${heroName}" class="hero-icon ${heroPrimaryAttr[hero.hero_id] || ''}" onerror="this.src='https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/unknown.png'">
               ${heroName}
             </td>
             <td>${hero.games}</td>
@@ -510,6 +564,7 @@
         const isRadiant = match.player_slot < 128;
         const isWin = (isRadiant && match.radiant_win) || (!isRadiant && !match.radiant_win);
         const duration = Math.floor(match.duration / 60) + ':' + (match.duration % 60).toString().padStart(2, '0');
+        const kda = (match.kills + match.assists) / (match.deaths || 1);
         
         // Форматируем дату и время матча
         const matchDate = new Date(match.start_time * 1000);
@@ -522,11 +577,22 @@
         html += `
           <tr>
             <td>
-              <img src="${getHeroIconUrl(match.hero_id)}" alt="${heroName}" class="hero-icon" onerror="this.src='https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/unknown.png'">
+              <img src="${getHeroIconUrl(match.hero_id)}" alt="${heroName}" title="${heroName}" class="hero-icon ${heroPrimaryAttr[match.hero_id] || ''}" onerror="this.src='https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/unknown.png'">
               ${heroName}
             </td>
-            <td><span class="${isWin ? 'win-rate high' : 'win-rate low'}">${isWin ? 'Победа' : 'Поражение'}</span></td>
-            <td>${match.kills}/${match.deaths}/${match.assists}</td>
+            <td>
+              ${isWin ? 
+                `<span title="Победа" style="color: #81c784; font-size: 1.2em;">✓</span>` : 
+                `<span title="Поражение" style="color: #e57373; font-size: 1.2em;">✗</span>`}
+            </td>
+            <td>
+              <span class="kda-rating ${
+                kda > 5 ? 'kda-high' :
+                kda >= 3 ? 'kda-medium' : 'kda-low'
+              }">
+                ${match.kills}/${match.deaths}/${match.assists}
+              </span>
+            </td>
             <td>${duration}</td>
             <td>${formattedDate} ${formattedTime}</td>
           </tr>
