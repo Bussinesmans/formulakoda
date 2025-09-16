@@ -58,6 +58,7 @@
     .back-button { background: var(--warning); margin-bottom: 20px; border-radius: 5px; }
     .back-button:hover { background: #e68900; }
     .hero-icon { width: 30px; height: 30px; border-radius: 50%; margin-right: 10px; vertical-align: middle; }
+    .hero-cell { display: flex; align-items: center; }
     footer { text-align: center; margin-top: 40px; padding: 20px; color: var(--gray); font-size: 14px; }
     @media (max-width: 768px) {
       .profile-header, .search-box { flex-direction: column; }
@@ -111,29 +112,132 @@
   </div>
 
   <script>
-    // Карта героев Dota 2 (ID -> название)
+    // Карта героев Dota 2 (ID -> название и изображение)
     const heroesMap = {
-      1: "Anti-Mage", 2: "Axe", 3: "Bane", 4: "Bloodseeker", 5: "Crystal Maiden", 6: "Drow Ranger",
-      7: "Earthshaker", 8: "Juggernaut", 9: "Mirana", 10: "Morphling", 11: "Shadow Fiend", 12: "Phantom Lancer",
-      13: "Puck", 14: "Pudge", 15: "Razor", 16: "Sand King", 17: "Storm Spirit", 18: "Sven", 19: "Tiny",
-      20: "Vengeful Spirit", 21: "Windranger", 22: "Zeus", 23: "Kunkka", 25: "Lina", 26: "Lion",
-      27: "Shadow Shaman", 28: "Slardar", 29: "Tidehunter", 30: "Witch Doctor", 31: "Lich", 32: "Riki",
-      33: "Enigma", 34: "Tinker", 35: "Sniper", 36: "Necrophos", 37: "Warlock", 38: "Beastmaster",
-      39: "Queen of Pain", 40: "Venomancer", 41: "Faceless Void", 42: "Wraith King", 43: "Death Prophet",
-      44: "Phantom Assassin", 45: "Pugna", 46: "Templar Assassin", 47: "Viper", 48: "Luna", 49: "Dragon Knight",
-      50: "Dazzle", 51: "Clockwerk", 52: "Leshrac", 53: "Nature's Prophet", 54: "Lifestealer", 55: "Dark Seer",
-      56: "Clinkz", 57: "Omniknight", 58: "Enchantress", 59: "Huskar", 60: "Night Stalker", 61: "Broodmother",
-      62: "Bounty Hunter", 63: "Weaver", 64: "Jakiro", 65: "Batrider", 66: "Chen", 67: "Spectre",
-      68: "Ancient Apparition", 69: "Doom", 70: "Ursa", 71: "Spirit Breaker", 72: "Gyrocopter", 73: "Alchemist",
-      74: "Invoker", 75: "Silencer", 76: "Outworld Destroyer", 77: "Lycan", 78: "Brewmaster", 79: "Shadow Demon",
-      80: "Lone Druid", 81: "Chaos Knight", 82: "Meepo", 83: "Treant Protector", 84: "Ogre Magi", 85: "Undying",
-      86: "Rubick", 87: "Disruptor", 88: "Nyx Assassin", 89: "Naga Siren", 90: "Keeper of the Light", 91: "Io",
-      92: "Visage", 93: "Slark", 94: "Medusa", 95: "Troll Warlord", 96: "Centaur Warrunner", 97: "Magnus",
-      98: "Timbersaw", 99: "Bristleback", 100: "Tusk", 101: "Skywrath Mage", 102: "Abaddon", 103: "Elder Titan",
-      104: "Legion Commander", 105: "Techies", 106: "Ember Spirit", 107: "Earth Spirit", 108: "Underlord",
-      109: "Terrorblade", 110: "Phoenix", 111: "Oracle", 112: "Winter Wyvern", 113: "Arc Warden", 114: "Monkey King",
-      119: "Dark Willow", 120: "Pangolier", 121: "Grimstroke", 123: "Hoodwink", 126: "Void Spirit", 128: "Snapfire",
-      129: "Mars", 135: "Dawnbreaker", 136: "Marci", 137: "Primal Beast", 138: "Muerta"
+      1: { name: "Anti-Mage", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/antimage.png" },
+      2: { name: "Axe", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/axe.png" },
+      3: { name: "Bane", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/bane.png" },
+      4: { name: "Bloodseeker", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/bloodseeker.png" },
+      5: { name: "Crystal Maiden", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/crystal_maiden.png" },
+      6: { name: "Drow Ranger", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/drow_ranger.png" },
+      7: { name: "Earthshaker", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/earthshaker.png" },
+      8: { name: "Juggernaut", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/juggernaut.png" },
+      9: { name: "Mirana", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/mirana.png" },
+      10: { name: "Morphling", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/morphling.png" },
+      11: { name: "Shadow Fiend", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/nevermore.png" },
+      12: { name: "Phantom Lancer", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/phantom_lancer.png" },
+      13: { name: "Puck", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/puck.png" },
+      14: { name: "Pudge", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/pudge.png" },
+      15: { name: "Razor", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/razor.png" },
+      16: { name: "Sand King", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/sand_king.png" },
+      17: { name: "Storm Spirit", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/storm_spirit.png" },
+      18: { name: "Sven", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/sven.png" },
+      19: { name: "Tiny", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/tiny.png" },
+      20: { name: "Vengeful Spirit", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/vengefulspirit.png" },
+      21: { name: "Windranger", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/windrunner.png" },
+      22: { name: "Zeus", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/zuus.png" },
+      23: { name: "Kunkka", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/kunkka.png" },
+      25: { name: "Lina", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/lina.png" },
+      26: { name: "Lion", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/lion.png" },
+      27: { name: "Shadow Shaman", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/shadow_shaman.png" },
+      28: { name: "Slardar", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/slardar.png" },
+      29: { name: "Tidehunter", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/tidehunter.png" },
+      30: { name: "Witch Doctor", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/witch_doctor.png" },
+      31: { name: "Lich", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/lich.png" },
+      32: { name: "Riki", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/riki.png" },
+      33: { name: "Enigma", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/enigma.png" },
+      34: { name: "Tinker", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/tinker.png" },
+      35: { name: "Sniper", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/sniper.png" },
+      36: { name: "Necrophos", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/necrolyte.png" },
+      37: { name: "Warlock", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/warlock.png" },
+      38: { name: "Beastmaster", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/beastmaster.png" },
+      39: { name: "Queen of Pain", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/queenofpain.png" },
+      40: { name: "Venomancer", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/venomancer.png" },
+      41: { name: "Faceless Void", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/faceless_void.png" },
+      42: { name: "Wraith King", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/skeleton_king.png" },
+      43: { name: "Death Prophet", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/death_prophet.png" },
+      44: { name: "Phantom Assassin", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/phantom_assassin.png" },
+      45: { name: "Pugna", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/pugna.png" },
+      46: { name: "Templar Assassin", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/templar_assassin.png" },
+      47: { name: "Viper", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/viper.png" },
+      48: { name: "Luna", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/luna.png" },
+      49: { name: "Dragon Knight", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/dragon_knight.png" },
+      50: { name: "Dazzle", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/dazzle.png" },
+      51: { name: "Clockwerk", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/rattletrap.png" },
+      52: { name: "Leshrac", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/leshrac.png" },
+      53: { name: "Nature's Prophet", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/furion.png" },
+      54: { name: "Lifestealer", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/life_stealer.png" },
+      55: { name: "Dark Seer", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/dark_seer.png" },
+      56: { name: "Clinkz", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/clinkz.png" },
+      57: { name: "Omniknight", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/omniknight.png" },
+      58: { name: "Enchantress", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/enchantress.png" },
+      59: { name: "Huskar", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/huskar.png" },
+      60: { name: "Night Stalker", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/night_stalker.png" },
+      61: { name: "Broodmother", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/broodmother.png" },
+      62: { name: "Bounty Hunter", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/bounty_hunter.png" },
+      63: { name: "Weaver", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/weaver.png" },
+      64: { name: "Jakiro", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/jakiro.png" },
+      65: { name: "Batrider", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/batrider.png" },
+      66: { name: "Chen", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/chen.png" },
+      67: { name: "Spectre", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/spectre.png" },
+      68: { name: "Ancient Apparition", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/ancient_apparition.png" },
+      69: { name: "Doom", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/doom_bringer.png" },
+      70: { name: "Ursa", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/ursa.png" },
+      71: { name: "Spirit Breaker", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/spirit_breaker.png" },
+      72: { name: "Gyrocopter", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/gyrocopter.png" },
+      73: { name: "Alchemist", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/alchemist.png" },
+      74: { name: "Invoker", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/invoker.png" },
+      75: { name: "Silencer", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/silencer.png" },
+      76: { name: "Outworld Destroyer", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/obsidian_destroyer.png" },
+      77: { name: "Lycan", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/lycan.png" },
+      78: { name: "Brewmaster", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/brewmaster.png" },
+      79: { name: "Shadow Demon", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/shadow_demon.png" },
+      80: { name: "Lone Druid", img: "https://cdn.cloudflare.steamstatic.com/apps/dota极速赛车开奖直播记录-极速赛车开奖结果记录-极速赛车历史开奖记录2/images/dota_react/heroes/lone_druid.png" },
+      81: { name: "Chaos Knight", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/chaos_knight.png" },
+      82: { name: "Meepo", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/meepo.png" },
+      83: { name: "Treant Protector", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/treant.png" },
+      84: { name: "Ogre Magi", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/ogre_magi.png" },
+      85: { name: "Undying", img: "极速赛车开奖直播记录-极速赛车开奖结果记录-极速赛车历史开奖记录https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/undying.png" },
+      86: { name: "Rubick", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/rubick.png" },
+      87: { name: "Disruptor", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/disruptor.png" },
+      88: { name: "Nyx Assassin", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/nyx_assassin.png" },
+      89: { name: "Naga Siren", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/naga_siren.png" },
+      90: { name: "Keeper of the Light", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/keeper_of_the_light.png" },
+      91: { name: "Io", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/wisp.png" },
+      92: { name: "Visage", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/visage.png" },
+      93: { name: "极速赛车开奖直播记录-极速赛车开奖结果记录-极速赛车历史开奖记录Slark", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/slark.png" },
+      94: { name: "Medusa", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/medusa.png" },
+      95: { name: "Troll Warlord", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/troll_warlord极速赛车开奖直播记录-极速赛车开奖结果记录-极速赛车历史开奖记录.png" },
+      96: { name: "Centaur Warrunner", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/centaur.png" },
+      97: { name: "Magnus", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/magnataur.png" },
+      98: { name: "Timbersaw", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/shredder.png" },
+      99: { name: "Bristleback", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/bristleback.png" },
+      100: { name: "Tusk", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/tusk.png" },
+      101: { name: "Skywrath Mage", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/skywrath_mage.png" },
+      102: { name: "Abaddon", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/abaddon.png" },
+      103: { name: "Elder Titan", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/elder_titan.png" },
+      104: { name: "Legion Commander", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/legion_commander.png" },
+      105: { name: "Techies", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/techies.png" },
+      106: { name: "Ember Spirit", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/ember_spirit.png" },
+      107: { name: "Earth Spirit", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/earth_spirit.png" },
+      108: { name: "Underlord", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/abyssal_underlord.png" },
+      109: { name: "Terrorblade", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/terrorblade极速赛车开奖直播记录-极速赛车开奖结果记录-极速赛车历史开奖记录.png" },
+      110: { name: "Phoenix",极速赛车开奖直播记录-极速赛车开奖结果记录-极速赛车历史开奖记录 img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/phoenix.png" },
+      111: { name: "Oracle", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/oracle.png" },
+      112: { name: "Winter Wyvern", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/winter_wyvern.png" },
+      113: { name: "Arc Warden", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/arc_warden.png" },
+      114: { name: "Monkey King", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/monkey_king.png" },
+      119: { name: "Dark Willow", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/dark_willow.png" },
+      120: { name: "Pangolier", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/pangolier.png" },
+      121: { name: "Grimstroke", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/grimstroke.png" },
+      123: { name: "Hoodwink", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/hoodwink.png" },
+      126: { name: "Void Spirit", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/void_spirit.png" },
+      128: { name: "Snapfire", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/snapfire.png" },
+      129: { name: "Mars", img: "https://cdn.cloudflare.极速赛车开奖直播记录-极速赛车开奖结果记录-极速赛车历史开奖记录steamstatic.com/apps/dota2/images/dota_react/heroes/mars.png" },
+      135: { name: "Dawnbreaker", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/dawnbreaker.png" },
+      136: { name: "Marci", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/marci.png" },
+      137: { name: "Primal Beast", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/primal_beast.png" },
+      138: { name: "Muerta", img: "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/muerta.png" }
     };
 
     // Переменные для пагинации
@@ -152,358 +256,7 @@
       searchResults: document.getElementById('searchResults'),
       pageInfo: document.getElementById('pageInfo'),
       prevPage: document.getElementById('prevPage'),
-      nextPage: document.getElementById('nextPage')
+      next极速赛车开奖直播记录-极速赛车开奖结果记录-极速赛车历史开奖记录Page: document.getElementById('nextPage')
     };
     
-    // Функция для поиска игроков по нику
-    async function searchPlayers() {
-      const playerInput = elements.playerInput.value.trim();
-      
-      // Сбрасываем состояние
-      hideError();
-      clearElement(elements.playersList);
-      hideElement(elements.pagination);
-      hideElement(elements.playerCard);
-      showElement(elements.loading);
-      
-      if (!playerInput) {
-        showError('Пожалуйста, введите никнейм для поиска');
-        return;
-      }
-      
-      currentSearchTerm = playerInput;
-      currentPage = 1;
-      
-      try {
-        await performSearch(playerInput, currentPage);
-      } catch (error) {
-        showError(error.message || 'Произошла ошибка при поиске игроков. Попробуйте позже.');
-      } finally {
-        hideElement(elements.loading);
-      }
-    }
-    
-    // Выполнение поиска с пагинацией
-    async function performSearch(playerName, page) {
-      try {
-        const searchResponse = await fetchWithTimeout(`https://api.opendota.com/api/search?q=${encodeURIComponent(playerName)}&page=${page}`);
-        if (!searchResponse.ok) throw new Error('Не удалось выполнить поиск. Попробуйте позже.');
-        
-        const searchData = await searchResponse.json();
-        
-        if (!searchData || searchData.length === 0) {
-          elements.playersList.innerHTML = '<p class="detail-item">Игроки с таким именем не найдены</p>';
-          return;
-        }
-        
-        // Сохраняем текущих игроков
-        currentPlayers = searchData;
-        
-        // Отображаем список игроков
-        displayPlayersList(searchData);
-        
-        // Настраиваем пагинацию
-        setupPagination();
-        
-      } catch (error) {
-        showError(error.message);
-      }
-    }
-    
-    // Функция для отображения списка игроков
-    function displayPlayersList(players) {
-      clearElement(elements.playersList);
-      
-      players.forEach(player => {
-        const playerEl = document.createElement('div');
-        playerEl.className = 'player-item';
-        playerEl.onclick = () => showPlayerStats(player.account_id);
-        
-        playerEl.innerHTML = `
-          <div class="player-header">
-            <img src="${player.avatarfull || getDefaultAvatar()}" alt="Аватар" class="avatar">
-            <div>
-              <h3 class="player-name">${player.personaname || 'Неизвестный игрок'}</h3>
-              <p>Последний раз в сети: ${player.last_online ? formatDate(player.last_online) : 'Неизвестно'}</p>
-            </div>
-          </div>
-          <div class="player-details">
-            <div class="detail-item">ID: ${player.account_id}</div>
-            <div class="detail-item">Сходство: ${similarityScore(player.personaname, currentSearchTerm)}%</div>
-          </div>
-        `;
-        
-        elements.playersList.appendChild(playerEl);
-      });
-    }
-    
-    // Функция для отображения статистики игрока
-    async function showPlayerStats(accountId) {
-      hideError();
-      showElement(elements.loading);
-      hideElement(elements.searchResults);
-      
-      try {
-        const [playerData, winLossData, heroesData, recentMatchesData] = await Promise.all([
-          fetchJsonWithTimeout(`https://api.opendota.com/api/players/${accountId}`),
-          fetchJsonWithTimeout(`https://api.opendota.com/api/players/${accountId}/wl`),
-          fetchJsonWithTimeout(`https://api.opendota.com/api/players/${accountId}/heroes`),
-          fetchJsonWithTimeout(`https://api.opendota.com/api/players/${accountId}/recentMatches`)
-        ]);
-        
-        displayPlayerData(playerData, winLossData, heroesData, recentMatchesData);
-        showElement(elements.playerCard);
-        
-        // Добавляем кнопку "Назад к результатам"
-        elements.playerCard.innerHTML = `
-          <button class="back-button" onclick="showSearchResults()">← Назад к результатам поиска</button>
-          ${elements.playerCard.innerHTML}
-        `;
-        
-      } catch (error) {
-        showError(error.message || 'Произошла ошибка при загрузке данных игрока. Попробуйте позже.');
-      } finally {
-        hideElement(elements.loading);
-      }
-    }
-    
-    // Функция для отображения данных игрока
-    function displayPlayerData(playerData, winLossData, heroesData, recentMatchesData) {
-      const profile = playerData.profile || {};
-      
-      // Форматируем данные
-      const totalMatches = winLossData.win + winLossData.lose;
-      const winRate = totalMatches > 0 ? ((winLossData.win / totalMatches) * 100).toFixed(2) : 0;
-      
-      // Сортируем героев по количеству игр
-      const topHeroes = [...heroesData]
-        .filter(hero => hero.games > 0)
-        .sort((a, b) => b.games - a.games)
-        .slice(0, 10);
-      
-      // Формируем HTML
-      let html = `
-        <div class="profile-header">
-          <img src="${profile.avatarfull || getDefaultAvatar()}" alt="Аватар" class="avatar">
-          <div class="profile-info">
-            <h2 class="profile-name">${profile.personaname || 'Неизвестный игрок'}</h2>
-            <p>${profile.steamid ? 'Steam ID: ' + profile.steamid : ''}</p>
-            <div class="profile-details">
-              <div class="detail-item win">Победы: ${winLossData.win || 0}</div>
-              <div class="detail-item lose">Поражения: ${winLossData.lose || 0}</div>
-              <div class="detail-item">Всего игр: ${totalMatches}</div>
-              <div class="detail-item">Винрейт: ${winRate}%</div>
-              ${playerData.mmr_estimate ? `<div class="detail-item">Примерный MMR: ${playerData.mmr_estimate.estimate || 'N/A'}</div>` : ''}
-            </div>
-          </div>
-        </div>
-      `;
-      
-      // Добавляем секцию с топовыми героями
-      html += createHeroesTable(topHeroes);
-      
-      // Добавляем секцию с последними матчами
-      html += createMatchesTable(recentMatchesData);
-      
-      elements.playerCard.innerHTML += html;
-    }
-    
-    // Создание таблицы с героями
-    function createHeroesTable(heroes) {
-      let html = `
-        <div class="stats-section">
-          <h3 class="section-title">Топ героев</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Герой</th>
-                <th>Игры</th>
-                <th>Победы</th>
-                <th>Винрейт</th>
-              </tr>
-            </thead>
-            <tbody>
-      `;
-      
-      heroes.forEach(hero => {
-        const heroName = heroesMap[hero.hero_id] || `Герой #${hero.hero_id}`;
-        const heroWinRate = hero.games > 0 ? ((hero.win / hero.games) * 100).toFixed(1) : 0;
-        let winRateClass = 'medium';
-        if (heroWinRate >= 55) winRateClass = 'high';
-        else if (heroWinRate < 45) winRateClass = 'low';
-        
-        html += `
-          <tr>
-            <td>${heroName}</td>
-            <td>${hero.games}</td>
-            <td>${hero.win}</td>
-            <td><span class="win-rate ${winRateClass}">${heroWinRate}%</span></td>
-          </tr>
-        `;
-      });
-      
-      html += `
-            </tbody>
-          </table>
-        </div>
-      `;
-      
-      return html;
-    }
-    
-    // Создание таблицы с матчами
-    function createMatchesTable(matches) {
-      let html = `
-        <div class="stats-section">
-          <h3 class="section-title">Последние матчи</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Герой</th>
-                <th>Результат</th>
-                <th>K/D/A</th>
-                <th>Длительность</th>
-                <th>Дата и время</th>
-              </tr>
-            </thead>
-            <tbody>
-      `;
-      
-      matches.slice(0, 10).forEach(match => {
-        const heroName = heroesMap[match.hero_id] || `Герой #${match.hero_id}`;
-        const isRadiant = match.player_slot < 128;
-        const isWin = (isRadiant && match.radiant_win) || (!isRadiant && !match.radiant_win);
-        const duration = Math.floor(match.duration / 60) + ':' + (match.duration % 60).toString().padStart(2, '0');
-        
-        // Форматируем дату и время матча
-        const matchDate = new Date(match.start_time * 1000);
-        const formattedDate = matchDate.toLocaleDateString('ru-RU');
-        const formattedTime = matchDate.toLocaleTimeString('ru-RU', { 
-          hour: '2-digit', 
-          minute: '2-digit' 
-        });
-        
-        html += `
-          <tr>
-            <td>${heroName}</td>
-            <td><span class="${isWin ? 'win-rate high' : 'win-rate low'}">${isWin ? 'Победа' : 'Поражение'}</span></td>
-            <td>${match.kills}/${match.deaths}/${match.assists}</td>
-            <td>${duration}</td>
-            <td>${formattedDate} ${formattedTime}</td>
-          </tr>
-        `;
-      });
-      
-      html += `
-            </tbody>
-          </table>
-        </div>
-      `;
-      
-      return html;
-    }
-    
-    // Функция для возврата к результатам поиска
-    function showSearchResults() {
-      showElement(elements.searchResults);
-      hideElement(elements.playerCard);
-      clearElement(elements.playerCard);
-    }
-    
-    // Настройка пагинации
-    function setupPagination() {
-      showElement(elements.pagination);
-      elements.pageInfo.textContent = `Страница ${currentPage}`;
-      
-      elements.prevPage.disabled = currentPage === 1;
-      elements.nextPage.disabled = currentPlayers.length < 20; // Если меньше 20 результатов, следующей страницы нет
-      
-      elements.prevPage.onclick = () => {
-        if (currentPage > 1) {
-          currentPage--;
-          performSearch(currentSearchTerm, currentPage);
-        }
-      };
-      
-      elements.nextPage.onclick = () => {
-        currentPage++;
-        performSearch(currentSearchTerm, currentPage);
-      };
-    }
-    
-    // Вспомогательные функции
-    function showError(message) {
-      elements.error.textContent = message;
-      showElement(elements.error);
-      hideElement(elements.loading);
-    }
-    
-    function hideError() {
-      hideElement(elements.error);
-    }
-    
-    function formatDate(timestamp) {
-      return new Date(timestamp * 1000).toLocaleDateString('ru-RU');
-    }
-    
-    function similarityScore(str1, str2) {
-      if (!str1 || !str2) return 0;
-      
-      const lowerStr1 = str1.toLowerCase();
-      const lowerStr2 = str2.toLowerCase();
-      
-      if (lowerStr1 === lowerStr2) return 100;
-      
-      let matchingChars = 0;
-      for (let i = 0; i < Math.min(lowerStr1.length, lowerStr2.length); i++) {
-        if (lowerStr1[i] === lowerStr2[i]) matchingChars++;
-      }
-      
-      return Math.round((matchingChars / Math.max(lowerStr1.length, lowerStr2.length)) * 100);
-    }
-    
-    function getDefaultAvatar() {
-      return 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb.jpg';
-    }
-    
-    function showElement(element) {
-      element.style.display = 'block';
-    }
-    
-    function hideElement(element) {
-      element.style.display = 'none';
-    }
-    
-    function clearElement(element) {
-      element.innerHTML = '';
-    }
-    
-    async function fetchWithTimeout(url, timeout = 10000) {
-      const controller = new AbortController();
-      const id = setTimeout(() => controller.abort(), timeout);
-      
-      const response = await fetch(url, {
-        signal: controller.signal
-      });
-      
-      clearTimeout(id);
-      return response;
-    }
-    
-    async function fetchJsonWithTimeout(url, timeout = 10000) {
-      const response = await fetchWithTimeout(url, timeout);
-      if (!response.ok) {
-        throw new Error(`Ошибка HTTP: ${response.status}`);
-      }
-      return response.json();
-    }
-    
-    // Обработка нажатия Enter в поле ввода
-    elements.playerInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        searchPlayers();
-      }
-    });
-  </script>
-</body>
-</html>
+    // Функция для поиска игроков по
