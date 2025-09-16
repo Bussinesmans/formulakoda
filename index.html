@@ -58,7 +58,7 @@
     .back-button { background: var(--warning); margin-bottom: 20px; border-radius: 5px; }
     .back-button:hover { background: #e68900; }
 
-    /* УЛУЧШЕННЫЕ ИКОНКИ ГЕРОЕВ — КАК У КОНКУРЕНТОВ */
+    /* УЛУЧШЕННЫЕ ИКОНКИ ГЕРОЕВ */
     .hero-icon {
       width: 36px;
       aspect-ratio: 1 / 1;
@@ -79,11 +79,34 @@
     .hero-icon.agi { border-color: #81c784; } /* Ловкость — зелёный */
     .hero-icon.int { border-color: #64b5f6; } /* Интеллект — синий */
 
-    /* Цветной KDA */
-    .kda-rating { font-weight: bold; }
-    .kda-high { color: #81c784; }
-    .kda-medium { color: #ffb74d; }
-    .kda-low { color: #e57373; }
+    /* KDA с эмодзи и фоном — ТОЛЬКО 3 ГРАДАЦИИ */
+    .kda-cell {
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-weight: bold;
+      display: inline-block;
+    }
+    .kda-bg-gold {
+      background: linear-gradient(135deg, #ffd700, #ffb700);
+      color: #333;
+      text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+    }
+    .kda-bg-high {
+      background: linear-gradient(135deg, #81c784, #66bb6a);
+      color: white;
+    }
+    .kda-bg-low {
+      background: linear-gradient(135deg, #e57373, #ef5350);
+      color: white;
+    }
+    .kda-gold {
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { text-shadow: 0 0 8px rgba(255, 215, 0, 0.7); }
+      50% { text-shadow: 0 0 16px rgba(255, 215, 0, 1); }
+      100% { text-shadow: 0 0 8px rgba(255, 215, 0, 0.7); }
+    }
 
     footer { text-align: center; margin-top: 40px; padding: 20px; color: var(--gray); font-size: 14px; }
     @media (max-width: 768px) {
@@ -586,11 +609,15 @@
                 `<span title="Поражение" style="color: #e57373; font-size: 1.2em;">✗</span>`}
             </td>
             <td>
-              <span class="kda-rating ${
-                kda > 5 ? 'kda-high' :
-                kda >= 3 ? 'kda-medium' : 'kda-low'
+              <span class="kda-cell ${
+                kda > 7 ? 'kda-bg-gold kda-gold' :
+                kda >= 3 ? 'kda-bg-high' : 'kda-bg-low'
               }">
                 ${match.kills}/${match.deaths}/${match.assists}
+                ${
+                  kda > 7 ? ' 👑' :
+                  kda >= 3 ? ' 👌' : ' 💀'
+                }
               </span>
             </td>
             <td>${duration}</td>
