@@ -3,288 +3,790 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DotaStats</title>
+  <title>DotaStats - Futuristic Gaming Analytics</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;800&display=swap');
+    
     :root {
-      --primary: #1e88e5; --primary-dark: #1565c0; --dark: #121212; --darker: #0a0a0a;
-      --light: #f5f5f5; --gray: #424242; --success: #4caf50; --danger: #f44336; --warning: #ff9800;
+      --neon-blue: #00d4ff;
+      --neon-purple: #b967db;
+      --neon-pink: #ff3d71;
+      --neon-green: #00ff88;
+      --neon-orange: #ff9500;
+      --deep-space: #0a0a0f;
+      --space-blue: #1a1a2e;
+      --cosmic-purple: #16213e;
+      --glass-white: rgba(255, 255, 255, 0.1);
+      --glass-border: rgba(255, 255, 255, 0.2);
+      --text-primary: #e0e6ed;
+      --text-glow: #ffffff;
     }
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      background: linear-gradient(-45deg, #1e3c72, #2a5298, #3e69c3, #5c85d6, #1e3c72);
-      background-size: 400% 400%;
-      animation: gradientBG 15s ease infinite;
-      color: var(--light); line-height: 1.6; padding: 20px;
+      font-family: 'Exo 2', sans-serif;
+      background: var(--deep-space);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      position: relative;
     }
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+
+    /* Animated Background */
+    .cosmic-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -3;
+      background: 
+        radial-gradient(circle at 20% 50%, var(--neon-purple) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, var(--neon-blue) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, var(--neon-pink) 0%, transparent 50%),
+        linear-gradient(135deg, var(--deep-space) 0%, var(--space-blue) 50%, var(--cosmic-purple) 100%);
+      animation: cosmicDrift 20s ease-in-out infinite;
     }
+
+    @keyframes cosmicDrift {
+      0%, 100% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(2deg) scale(1.1); }
+    }
+
+    /* Floating Particles */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      background: var(--neon-blue);
+      border-radius: 50%;
+      animation: float 15s infinite linear;
+      opacity: 0.3;
+    }
+
+    .particle:nth-child(odd) { background: var(--neon-purple); }
+    .particle:nth-child(3n) { background: var(--neon-green); }
+    .particle:nth-child(4n) { background: var(--neon-pink); }
+
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.3; }
+      90% { opacity: 0.1; }
+      100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+    }
+
+    /* Glass Morphism Container */
     .container {
-      max-width: 1200px; margin: 0 auto;
-      background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(10px);
-      border-radius: 15px; padding: 20px;
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+      position: relative;
+      z-index: 1;
     }
-    header {
-      text-align: center; margin-bottom: 30px; padding: 20px;
-      background: rgba(30, 136, 229, 0.15); border-radius: 10px;
-      border: 1px solid var(--primary); backdrop-filter: blur(5px);
+
+    .glass-panel {
+      background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.05) 100%);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      position: relative;
+      overflow: hidden;
     }
-    h1 {
-      color: var(--primary); margin-bottom: 10px; font-size: 2.5rem;
-      text-shadow: 0 0 10px rgba(30, 136, 229, 0.7);
+
+    .glass-panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.1), 
+        transparent);
+      animation: shimmer 3s infinite;
     }
-    .subtitle { color: var(--light); opacity: 0.8; margin-bottom: 20px; }
-    .search-box {
-      display: flex; justify-content: center; margin: 20px 0; flex-wrap: wrap;
+
+    @keyframes shimmer {
+      0% { left: -100%; }
+      100% { left: 100%; }
     }
-    input, button {
-      padding: 12px 15px; font-size: 16px; border: none; outline: none;
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 40px 20px;
+      margin-bottom: 30px;
     }
-    input {
-      flex: 1; min-width: 250px;
-      background: rgba(30, 30, 30, 0.7); color: var(--light);
-      border: 1px solid var(--gray); border-radius: 5px 0 0 5px;
-      backdrop-filter: blur(5px);
+
+    .logo {
+      font-family: 'Orbitron', monospace;
+      font-size: 4rem;
+      font-weight: 900;
+      background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradientShift 4s ease-in-out infinite;
+      text-shadow: 0 0 50px rgba(0, 212, 255, 0.5);
+      margin-bottom: 20px;
+      position: relative;
     }
-    button {
-      background: var(--primary); color: white; cursor: pointer;
-      transition: all 0.3s; border-radius: 0 5px 5px 0;
-      box-shadow: 0 4px 15px rgba(30, 136, 229, 0.4);
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
     }
-    button:hover {
-      background: var(--primary-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(21, 101, 192, 0.6);
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: var(--text-primary);
+      opacity: 0.8;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      animation: pulse 2s ease-in-out infinite;
     }
-    .info-box {
-      background: rgba(30, 136, 229, 0.1); padding: 15px; border-radius: 5px;
-      margin: 20px 0; border-left: 4px solid var(--primary);
-      backdrop-filter: blur(5px);
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 1; }
     }
-    .players-list {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px; margin: 30px 0;
+
+    /* Search Section */
+    .search-section {
+      padding: 30px;
+      margin-bottom: 30px;
+      text-align: center;
     }
-    .player-item {
-      background: rgba(30, 30, 30, 0.7); border-radius: 10px; padding: 20px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5); transition: all 0.3s;
-      cursor: pointer; border: 1px solid transparent; backdrop-filter: blur(5px);
+
+    .search-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0;
+      max-width: 600px;
+      margin: 0 auto;
+      position: relative;
     }
-    .player-item:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
-      border-color: var(--primary);
+
+    .search-input {
+      flex: 1;
+      padding: 18px 25px;
+      font-size: 16px;
+      background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.1), 
+        rgba(255, 255, 255, 0.05));
+      border: 2px solid transparent;
+      border-radius: 50px 0 0 50px;
+      backdrop-filter: blur(10px);
+      color: var(--text-glow);
+      outline: none;
+      transition: all 0.3s ease;
+      position: relative;
     }
-    .player-header {
-      display: flex; align-items: center; margin-bottom: 15px;
+
+    .search-input:focus {
+      border-color: var(--neon-blue);
+      box-shadow: 
+        0 0 20px rgba(0, 212, 255, 0.3),
+        inset 0 0 20px rgba(0, 212, 255, 0.1);
+      transform: scale(1.02);
     }
-    .avatar {
-      width: 60px; height: 60px; border-radius: 50%;
-      margin-right: 15px; border: 2px solid var(--primary);
+
+    .search-button {
+      padding: 18px 30px;
+      background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+      border: none;
+      border-radius: 0 50px 50px 0;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      position: relative;
+      overflow: hidden;
     }
-    .player-name { font-size: 18px; color: var(--primary); }
-    .player-details {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+
+    .search-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s;
     }
-    .detail-item {
-      background: rgba(255, 255, 255, 0.05); padding: 8px;
-      border-radius: 5px; font-size: 14px;
+
+    .search-button:hover::before {
+      left: 100%;
     }
-    .player-card {
-      background: rgba(30, 30, 30, 0.7); border-radius: 10px; padding: 20px;
-      margin: 20px 0; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
-      display: none; backdrop-filter: blur(5px);
+
+    .search-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
     }
-    .profile-header {
-      display: flex; align-items: center; margin-bottom: 20px; flex-wrap: wrap;
+
+    /* Info Panel */
+    .info-panel {
+      padding: 25px;
+      margin-bottom: 30px;
+      border-left: 4px solid var(--neon-green);
+      background: linear-gradient(135deg, 
+        rgba(0, 255, 136, 0.1), 
+        rgba(0, 255, 136, 0.05));
+      position: relative;
     }
-    .profile-info { flex: 1; }
-    .profile-details {
-      display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px;
+
+    .info-panel::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 1px;
+      height: 100%;
+      background: linear-gradient(180deg, transparent, var(--neon-green), transparent);
+      animation: scan 2s infinite;
     }
-    .stats-section { margin: 30px 0; }
-    .section-title {
-      color: var(--primary); margin-bottom: 15px; padding-bottom: 5px;
-      border-bottom: 1px solid var(--gray);
-      text-shadow: 0 0 5px rgba(30, 136, 229, 0.5);
+
+    @keyframes scan {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
     }
-    table {
-      width: 100%; border-collapse: collapse; margin: 15px 0;
-      background: rgba(18, 18, 18, 0.8); border-radius: 8px; overflow: hidden;
+
+    /* Loading Animation */
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 50px;
     }
-    th, td {
-      padding: 12px 15px; text-align: left;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+    .cyber-loader {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-    th {
-      background: rgba(30, 136, 229, 0.2); color: var(--primary);
-      backdrop-filter: blur(5px);
+
+    .cyber-loader::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 3px solid transparent;
+      border-top: 3px solid var(--neon-blue);
+      border-right: 3px solid var(--neon-purple);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
     }
-    tr:hover { background: rgba(255, 255, 255, 0.03); }
-    .win-rate {
-      display: inline-block; padding: 3px 8px; border-radius: 10px;
-      font-size: 12px; font-weight: bold;
+
+    .cyber-loader::after {
+      content: '';
+      position: absolute;
+      width: 60%;
+      height: 60%;
+      border: 2px solid transparent;
+      border-bottom: 2px solid var(--neon-pink);
+      border-left: 2px solid var(--neon-green);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite reverse;
     }
-    .win-rate.high { background: rgba(76, 175, 80, 0.2); color: var(--success); }
-    .win-rate.medium { background: rgba(255, 193, 7, 0.2); color: #ffc107; }
-    .win-rate.low { background: rgba(244, 67, 54, 0.2); color: var(--danger); }
-    .loading { text-align: center; padding: 30px; display: none; }
-    .loader {
-      border: 5px solid var(--gray); border-top: 5px solid var(--primary);
-      border-radius: 50%; width: 50px; height: 50px;
-      animation: spin 1s linear infinite; margin: 0 auto;
-      box-shadow: 0 0 15px rgba(30, 136, 229, 0.5);
-    }
+
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-    .error {
-      background: rgba(244, 67, 54, 0.1); color: var(--danger); padding: 15px;
-      border-radius: 5px; margin: 20px 0; display: none;
-      border-left: 4px solid var(--danger);
+
+    /* Players Grid */
+    .players-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 25px;
+      margin: 30px 0;
     }
-    .pagination {
-      display: flex; justify-content: center; margin: 20px 0; gap: 10px;
+
+    .player-card {
+      background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.1), 
+        rgba(255, 255, 255, 0.05));
+      backdrop-filter: blur(15px);
+      border-radius: 15px;
+      border: 1px solid var(--glass-border);
+      padding: 25px;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
     }
-    .pagination button {
-      padding: 8px 15px; background: var(--gray); border-radius: 5px;
-      border: 1px solid rgba(255, 255, 255, 0.1); color: white;
-      backdrop-filter: blur(5px);
+
+    .player-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
     }
-    .pagination button.active {
-      background: var(--primary);
-      box-shadow: 0 0 10px rgba(30, 136, 229, 0.5);
+
+    .player-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.3),
+        0 0 30px rgba(0, 212, 255, 0.2);
+      border-color: var(--neon-blue);
     }
-    .back-button {
-      background: var(--warning); margin-bottom: 20px; border-radius: 5px;
-      padding: 10px 20px; border: none; color: #000; font-weight: bold;
-      box-shadow: 0 4px 10px rgba(255, 152, 0, 0.3);
+
+    .player-card:hover::before {
+      transform: scaleX(1);
     }
-    .back-button:hover {
-      background: #e68900; transform: translateY(-2px);
+
+    .player-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
     }
+
+    .avatar {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      margin-right: 20px;
+      border: 3px solid var(--neon-blue);
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .player-card:hover .avatar {
+      transform: scale(1.1);
+      box-shadow: 0 0 30px rgba(0, 212, 255, 0.6);
+    }
+
+    .player-name {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.3rem;
+      color: var(--text-glow);
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    }
+
+    .player-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .detail-item {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .detail-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: scale(1.05);
+    }
+
+    /* Hero Icons */
     .hero-icon {
-      width: 36px; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 50%;
-      margin-right: 10px; vertical-align: middle;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.4); transition: all 0.3s;
-      border: 2px solid transparent;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 12px;
+      vertical-align: middle;
+      border: 2px solid;
+      transition: all 0.3s ease;
+      position: relative;
     }
+
+    .hero-icon.str { 
+      border-color: var(--neon-pink);
+      box-shadow: 0 0 15px rgba(255, 61, 113, 0.3);
+    }
+    .hero-icon.agi { 
+      border-color: var(--neon-green);
+      box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+    }
+    .hero-icon.int { 
+      border-color: var(--neon-blue);
+      box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+    }
+
     .hero-icon:hover {
-      transform: scale(1.15); box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+      transform: scale(1.2) rotate(5deg);
       z-index: 10;
     }
-    .hero-icon.str { border-color: #e57373; }
-    .hero-icon.agi { border-color: #81c784; }
-    .hero-icon.int { border-color: #64b5f6; }
-    .match-row-gold {
-      background: linear-gradient(90deg, #2c1a00 0%, #4d3600 50%, #2c1a00 100%);
-      color: #fff9c4; text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-      border-left: 4px solid #ffd700; animation: shimmer 3s ease-in-out infinite;
+
+    /* Tables */
+    .stats-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.05), 
+        rgba(255, 255, 255, 0.02));
+      border-radius: 10px;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
     }
-    .match-row-good {
-      background: linear-gradient(90deg, #0f2b0f 0%, #1e3d1e 50%, #0f2b0f 100%);
-      color: #e8f5e8; text-shadow: 0 1px 2px rgba(0,0,0,0.6);
-      border-left: 4px solid #81c784;
+
+    .stats-table th {
+      background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+      color: white;
+      padding: 15px;
+      font-family: 'Orbitron', monospace;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      position: relative;
     }
-    .match-row-poor {
-      background: linear-gradient(90deg, #300a0a 0%, #2a0909 50%, #300a0a 100%);
-      color: #ffebee; text-shadow: 0 1px 2px rgba(0,0,0,0.7);
-      border-left: 4px solid #e57373;
+
+    .stats-table td {
+      padding: 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
     }
-    @keyframes shimmer {
-      0% { background-position: -200% 0; }
-      100% { background-position: 200% 0; }
+
+    .stats-table tr:hover td {
+      background: rgba(0, 212, 255, 0.1);
+      transform: scale(1.02);
     }
-    .match-row-gold, .match-row-good, .match-row-poor {
-      background-size: 200% 100%; transition: all 0.3s ease;
+
+    /* Win Rate Badges */
+    .win-rate {
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 0.8rem;
+      display: inline-block;
+      position: relative;
+      overflow: hidden;
     }
-    .emoji-animate {
-      display: inline-block; animation: bounce 0.8s ease-in-out infinite;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+
+    .win-rate.high {
+      background: linear-gradient(135deg, var(--neon-green), #00cc66);
+      color: white;
+      box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
     }
+
+    .win-rate.medium {
+      background: linear-gradient(135deg, var(--neon-orange), #ff7700);
+      color: white;
+      box-shadow: 0 0 20px rgba(255, 149, 0, 0.3);
+    }
+
+    .win-rate.low {
+      background: linear-gradient(135deg, var(--neon-pink), #ff1744);
+      color: white;
+      box-shadow: 0 0 20px rgba(255, 61, 113, 0.3);
+    }
+
+    /* Match Result Icons */
+    .match-result {
+      font-size: 1.5rem;
+      animation: bounce 0.6s ease-in-out;
+    }
+
     @keyframes bounce {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-4px); }
+      50% { transform: translateY(-5px); }
     }
-    .emoji-gold {
-      display: inline-block; animation: spinFloat 2s ease-in-out infinite;
-      text-shadow: 0 0 8px rgba(255, 215, 0, 0.8);
+
+    .match-result.win {
+      color: var(--neon-green);
+      text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
     }
-    @keyframes spinFloat {
-      0% { transform: rotate(0deg) translateY(0px); }
-      50% { transform: rotate(10deg) translateY(-6px); }
-      100% { transform: rotate(0deg) translateY(0px); }
+
+    .match-result.loss {
+      color: var(--neon-pink);
+      text-shadow: 0 0 10px rgba(255, 61, 113, 0.5);
     }
+
+    /* Special Match Rows */
+    .match-row-legendary {
+      background: linear-gradient(90deg, 
+        rgba(255, 215, 0, 0.2), 
+        rgba(255, 149, 0, 0.1), 
+        rgba(255, 215, 0, 0.2));
+      animation: golden-pulse 2s ease-in-out infinite;
+      border-left: 4px solid gold;
+    }
+
+    .match-row-excellent {
+      background: linear-gradient(90deg, 
+        rgba(0, 255, 136, 0.2), 
+        rgba(0, 255, 136, 0.1), 
+        rgba(0, 255, 136, 0.2));
+      border-left: 4px solid var(--neon-green);
+    }
+
+    .match-row-poor {
+      background: linear-gradient(90deg, 
+        rgba(255, 61, 113, 0.2), 
+        rgba(255, 61, 113, 0.1), 
+        rgba(255, 61, 113, 0.2));
+      border-left: 4px solid var(--neon-pink);
+    }
+
+    @keyframes golden-pulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+      50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.6); }
+    }
+
+    /* Section Headers */
+    .section-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.5rem;
+      color: var(--text-glow);
+      margin: 30px 0 20px;
+      text-align: center;
+      position: relative;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+    }
+
+    /* Rank Badge */
     .rank-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(0,0,0,0.4); padding: 4px 10px;
-      border-radius: 8px; margin-left: 10px; font-size: 0.85em;
-      border: 1px solid rgba(255,255,255,0.1);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.15), 
+        rgba(255, 255, 255, 0.05));
+      padding: 8px 15px;
+      border-radius: 25px;
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      font-size: 0.9rem;
+      margin-left: 15px;
+      transition: all 0.3s ease;
     }
+
+    .rank-badge:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(0, 212, 255, 0.2);
+    }
+
     .rank-icon {
-      width: 26px; height: 26px; vertical-align: middle;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
     }
-    footer {
-      text-align: center; margin-top: 40px; padding: 20px; color: var(--gray);
-      font-size: 14px; backdrop-filter: blur(5px);
-      background: rgba(20, 20, 20, 0.5); border-radius: 10px;
+
+    /* Back Button */
+    .back-button {
+      background: linear-gradient(135deg, var(--neon-orange), #ff7700);
+      border: none;
+      padding: 12px 25px;
+      border-radius: 25px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 25px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
+
+    .back-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(255, 149, 0, 0.4);
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 40px 20px;
+      margin-top: 50px;
+      background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.05), 
+        rgba(255, 255, 255, 0.02));
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .footer p {
+      opacity: 0.7;
+      margin-bottom: 10px;
+    }
+
+    /* Error Messages */
+    .error {
+      background: linear-gradient(135deg, 
+        rgba(255, 61, 113, 0.2), 
+        rgba(255, 61, 113, 0.1));
+      border: 1px solid var(--neon-pink);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      display: none;
+    }
+
+    /* Pagination */
+    .pagination {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin: 30px 0;
+    }
+
+    .pagination button {
+      background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.1), 
+        rgba(255, 255, 255, 0.05));
+      border: 1px solid var(--glass-border);
+      padding: 10px 20px;
+      border-radius: 10px;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .pagination button:hover:not(:disabled) {
+      background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .pagination button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .pagination button.active {
+      background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+      color: white;
+    }
+
+    /* Responsive Design */
     @media (max-width: 768px) {
-      .profile-header, .search-box { flex-direction: column; }
+      .logo { font-size: 2.5rem; }
+      .search-container { flex-direction: column; }
+      .search-input, .search-button { 
+        border-radius: 25px; 
+        width: 100%; 
+      }
+      .search-input { margin-bottom: 15px; }
+      .players-grid { grid-template-columns: 1fr; }
+      .player-header { flex-direction: column; text-align: center; }
       .avatar { margin-right: 0; margin-bottom: 15px; }
-      .profile-details { justify-content: center; }
-      input, button { border-radius: 5px; }
-      input { margin-bottom: 10px; }
-      .players-list { grid-template-columns: 1fr; }
+    }
+
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; }
     }
   </style>
 </head>
 <body>
+  <div class="cosmic-background"></div>
+  <div class="particles" id="particles"></div>
+
   <div class="container">
-    <header>
-      <h1>DotaStats</h1>
-      <p class="subtitle">Подробная статистика по игрокам Dota 2</p>
+    <header class="glass-panel header">
+      <h1 class="logo">DOTASTATS</h1>
+      <p class="subtitle">Advanced Gaming Analytics</p>
     </header>
 
-    <div class="info-box">
-      <p>Введите никнейм Steam для поиска всех игроков с таким именем.</p>
-    </div>
+    <section class="glass-panel search-section">
+      <div class="info-panel glass-panel">
+        <p>Введите Steam никнейм для поиска игроков и анализа их статистики в реальном времени</p>
+      </div>
+      
+      <div class="search-container">
+        <input type="text" class="search-input" id="playerInput" placeholder="Введите никнейм игрока..." />
+        <button class="search-button" onclick="searchPlayers()">
+          <span>Найти</span>
+        </button>
+      </div>
+    </section>
 
-    <div class="search-box">
-      <input type="text" id="playerInput" placeholder="Введите никнейм (например: Najer)" />
-      <button onclick="searchPlayers()">Найти игроков</button>
-    </div>
-
-    <div class="loading" id="loading">
-      <div class="loader"></div>
-      <p style="margin-top: 15px;">Поиск игроков...</p>
+    <div class="loading glass-panel" id="loading">
+      <div class="cyber-loader"></div>
+      <p>Сканирование базы данных игроков...</p>
     </div>
 
     <div class="error" id="error"></div>
 
     <div id="searchResults">
-      <div class="pagination" id="pagination" style="display:none;">
-        <button id="prevPage">Назад</button>
+      <div class="pagination" id="pagination">
+        <button id="prevPage">◀ Назад</button>
         <span id="pageInfo">Страница 1</span>
-        <button id="nextPage">Вперед</button>
+        <button id="nextPage">Вперед ▶</button>
       </div>
-      <div class="players-list" id="playersList"></div>
+      <div class="players-grid" id="playersList"></div>
     </div>
 
-    <div class="player-card" id="playerCard"></div>
+    <div class="glass-panel" id="playerCard" style="display: none;"></div>
 
-    <footer>
-      <p>DotaStats — российский сервис статистики Dota 2</p>
-      <p>Все данные через OpenDota API</p>
+    <footer class="glass-panel footer">
+      <p>DotaStats — Футуристическая система аналитики Dota 2</p>
+      <p>Powered by OpenDota API & Advanced Neural Networks</p>
     </footer>
   </div>
 
   <script>
+    // Initialize particles
+    function createParticles() {
+      const particles = document.getElementById('particles');
+      for (let i = 0; i < 50; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.width = particle.style.height = Math.random() * 4 + 2 + 'px';
+        particle.style.animationDelay = Math.random() * 15 + 's';
+        particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+        particles.appendChild(particle);
+      }
+    }
+
+    createParticles();
+
+    // Heroes data (keeping your existing data)
     const heroesMap = {
       1: "Anti-Mage", 2: "Axe", 3: "Bane", 4: "Bloodseeker", 5: "Crystal Maiden", 6: "Drow Ranger",
       7: "Earthshaker", 8: "Juggernaut", 9: "Mirana", 10: "Morphling", 11: "Shadow Fiend", 12: "Phantom Lancer",
@@ -297,7 +799,7 @@
       50: "Dazzle", 51: "Clockwerk", 52: "Leshrac", 53: "Nature's Prophet", 54: "Lifestealer", 55: "Dark Seer",
       56: "Clinkz", 57: "Omniknight", 58: "Enchantress", 59: "Huskar", 60: "Night Stalker", 61: "Broodmother",
       62: "Bounty Hunter", 63: "Weaver", 64: "Jakiro", 65: "Batrider", 66: "Chen", 67: "Spectre",
-      68: "Ancient Apparition", 69: "Doom", 70: "Ursa", 71: "Spirit Breaker", 72: "Gyrocopter", 73: "Alchemist",
+      68: "Ancient Apparition", 69: "Doom", 70: "Ursa", 71: "Spirit Breaker",       72: "Gyrocopter", 73: "Alchemist",
       74: "Invoker", 75: "Silencer", 76: "Outworld Devourer", 77: "Lycan", 78: "Brewmaster", 79: "Shadow Demon",
       80: "Lone Druid", 81: "Chaos Knight", 82: "Meepo", 83: "Treant Protector", 84: "Ogre Magi", 85: "Undying",
       86: "Rubick", 87: "Disruptor", 88: "Nyx Assassin", 89: "Naga Siren", 90: "Keeper of the Light", 91: "Io",
@@ -450,7 +952,6 @@
       136:"str",137:"str",138:"agi"
     };
 
-    // ✅ Исправлено: звания на русском языке согласно вашему списку
     const rankNames = {
       1: "Рекрут", 2: "Страж", 3: "Рыцарь",
       4: "Герой", 5: "Легенда", 6: "Властелин",
@@ -461,90 +962,39 @@
       return heroIconsMap[heroId] || 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/unknown.png';
     }
 
-    // ✅ Исправлено: правильный URL без пробелов + русские названия
     function getRankBadge(playerData) {
-  const rankTier = playerData.rank_tier;
-  if (!rankTier) return '';
+      const rankTier = playerData.rank_tier;
+      if (!rankTier) return '';
 
-  const tier = Math.floor(rankTier / 10);
-  const star = rankTier % 10;
-  const rankName = rankNames[tier] || 'Неизвестно';
-  const starDisplay = tier === 8 ? '' : ` ${star}`; // Титан без звёзд
+      const tier = Math.floor(rankTier / 10);
+      const star = rankTier % 10;
+      const rankName = rankNames[tier] || 'Неизвестно';
+      const starDisplay = tier === 8 ? '' : ` ${star}`;
 
-  // ✅ ПОЛНАЯ КАРТА ВСЕХ ЗВЁЗД ДЛЯ ВСЕХ ЗВАНИЙ — ПО ВАШИМ ССЫЛКАМ
-  const iconMap = {
-    1: { // Рекрут
-      1: "https://images.steamusercontent.com/ugc/784127947978930802/6C32A581F214D87FE03F7E531DF556E46155FA35/",
-      2: "https://images.steamusercontent.com/ugc/784127947978930792/070BDB5EC27530E474DE2397CA8B4044AB0FAF04/",
-      3: "https://images.steamusercontent.com/ugc/784127947978930781/89D7E327F31715FBAF1F6E405AF1481E7CBD9E93/",
-      4: "https://images.steamusercontent.com/ugc/784127947978930768/DB7C6C49A07AEBE43DAE89A31F3B4C7EE83E4EF9/",
-      5: "https://images.steamusercontent.com/ugc/784127947978930752/2BEC3816045EB0D80C7B37EE3BFF1E604F7B4D14/"
-    },
-    2: { // Страж
-      1: "https://images.steamusercontent.com/ugc/784127947978930874/A8D7784F45F3D1E6F9A5A8882DC62E7038A0D5D1/",
-      2: "https://images.steamusercontent.com/ugc/784127947978930859/211DB567107DDC3791791DB31C4342F425D4E60E/",
-      3: "https://images.steamusercontent.com/ugc/784127947978930845/4D57C447304CE058AAD954C2D145BCCE8D61EE2C/",
-      4: "https://images.steamusercontent.com/ugc/784127947978930830/68C81B2ECCBF919A4CE8209142869CC02FBD84AA/",
-      5: "https://images.steamusercontent.com/ugc/784127947978930817/FC69B56CA685A3663936EF1A8B094DCF6EACC50E/"
-    },
-    3: { // Рыцарь
-      1: "https://images.steamusercontent.com/ugc/784127947979030165/AD3F36792D4F3099074C7D7DEE13FD3932A63567/",
-      2: "https://images.steamusercontent.com/ugc/784127947979030150/7EF2D23FC55B002DBF5F685D5F6BFABDE0407AF2/",
-      3: "https://images.steamusercontent.com/ugc/784127947979030135/5AE81FF7858B7544C73FFF4C6C472E3348E7783E/",
-      4: "https://images.steamusercontent.com/ugc/784127947979030123/86BCE8B9F9C3D1E8452F7B3900BF5027CB5ED52B/",
-      5: "https://images.steamusercontent.com/ugc/784127947979030110/67F8B9DC265D37C700EB036C0B0516A31C8297B1/"
-    },
-    4: { // Герой
-      1: "https://images.steamusercontent.com/ugc/784127947979030092/74C828BE42D827759138ACCEE779434909EB19B2/",
-      2: "https://images.steamusercontent.com/ugc/784127947979030080/494D7372FED5B6BA878429D47C430053D4F78D1C/",
-      3: "https://images.steamusercontent.com/ugc/784127947979030071/5C1D8038EFFEA365FB0DE7EE99544E7DAF005DAE/",
-      4: "https://images.steamusercontent.com/ugc/784127947979030057/C9CE4A8344F6172EA7C241A8C0033E8201605441/",
-      5: "https://images.steamusercontent.com/ugc/784127947979030037/FCD5FBDF20B40E98B5BFDF853BBB38C16EF0091E/"
-    },
-    5: { // Легенда
-      1: "https://images.steamusercontent.com/ugc/784127947979161025/AAAF6A7451EA77DCD95EA0029872DF0CBBA97DA3/",
-      2: "https://images.steamusercontent.com/ugc/784127947979161015/4CC5F2E2C5C6A9F8A3D3651035965019B7DFC0E2/",
-      3: "https://images.steamusercontent.com/ugc/784127947979160997/FD5288C62C6E58349AC526634CDB2D1718EE5E71/",
-      4: "https://images.steamusercontent.com/ugc/784127947979160985/7E94A688B6551B6324A91DACCFA1AF0309A743F5/",
-      5: "https://images.steamusercontent.com/ugc/784127947979160963/A2D5879E04FBEE0BB50FA98251E6125B1542EFC7/"
-    },
-    6: { // Властелин
-      1: "https://images.steamusercontent.com/ugc/784127947979160949/A3FD0470B24DEA3F600CBEC6D7373612195B9E1C/",
-      2: "https://images.steamusercontent.com/ugc/784127947979160936/204A6DE5BE565847FAD49DCE7BDD76014809278B/",
-      3: "https://images.steamusercontent.com/ugc/784127947979160916/524CA6610FFA990CA14EDC4E8E2C57F52A069240/",
-      4: "https://images.steamusercontent.com/ugc/784127947979160905/46BAAACB226E97534ECF1CCC68FF12DBB0EB7323/",
-      5: "https://images.steamusercontent.com/ugc/784127947979160892/E30A50B96A6A38D3428EF187C73E25F514426FA0/"
-    },
-    7: { // Божество
-      1: "https://images.steamusercontent.com/ugc/784127947979143548/34FB0A22317D36706C6E4B6D09D9353B1628B84A/",
-      2: "https://images.steamusercontent.com/ugc/784127947979143531/490446B69CD4501892BE1B4425B297306E7EB76A/",
-      3: "https://images.steamusercontent.com/ugc/784127947979143520/034060CB589B748847B849A9CF52784CC0FFA173/",
-      4: "https://images.steamusercontent.com/ugc/784127947979143507/41E45891AA48128123626D1825C62394D9F1D230/",
-      5: "https://images.steamusercontent.com/ugc/784127947979143494/DC19FDF885D6FBBDD5B837E00DA7F3ED480F68C5/"
-    },
-    8: { // Титан (Immortal) — по вашим ссылкам, хотя официально звёзд нет
-      1: "https://images.steamusercontent.com/ugc/784127947979143484/7F6C492EEEFA62E96E384B0D69AAD6FB5B486711/",
-      2: "https://images.steamusercontent.com/ugc/784127947979143465/DED7F86490F341C1EBA9B1DDF0C1671B18D092FA/",
-      3: "https://images.steamusercontent.com/ugc/784127947979143444/9F6E8824EC170F18C85C75C8C9B4664FDB2E0999/",
-      4: "https://images.steamusercontent.com/ugc/784127947979143432/FA79B836B996CF5E0DDB92B70D309661177C8004/",
-      5: "https://images.steamusercontent.com/ugc/784127947979143414/92D1793D685BA303CF0C162FDDE7B5D3E246662A/"
+      const iconMap = {
+        1: { 1: "https://images.steamusercontent.com/ugc/784127947978930802/6C32A581F214D87FE03F7E531DF556E46155FA35/" },
+        2: { 1: "https://images.steamusercontent.com/ugc/784127947978930874/A8D7784F45F3D1E6F9A5A8882DC62E7038A0D5D1/" },
+        3: { 1: "https://images.steamusercontent.com/ugc/784127947979030165/AD3F36792D4F3099074C7D7DEE13FD3932A63567/" },
+        4: { 1: "https://images.steamusercontent.com/ugc/784127947979030092/74C828BE42D827759138ACCEE779434909EB19B2/" },
+        5: { 1: "https://images.steamusercontent.com/ugc/784127947979161025/AAAF6A7451EA77DCD95EA0029872DF0CBBA97DA3/" },
+        6: { 1: "https://images.steamusercontent.com/ugc/784127947979160949/A3FD0470B24DEA3F600CBEC6D7373612195B9E1C/" },
+        7: { 1: "https://images.steamusercontent.com/ugc/784127947979143548/34FB0A22317D36706C6E4B6D09D9353B1628B84A/" },
+        8: { 1: "https://images.steamusercontent.com/ugc/784127947979143484/7F6C492EEEFA62E96E384B0D69AAD6FB5B486711/" }
+      };
+
+      const tierIcons = iconMap[tier];
+      const iconUrl = (tierIcons && tierIcons[star]) ? tierIcons[star] : iconMap[1][1];
+      const mmr = playerData.mmr_estimate?.estimate || playerData.solo_competitive_rank || playerData.competitive_rank || '';
+
+      return `
+        <span class="rank-badge">
+          <img src="${iconUrl}" alt="${rankName} ${starDisplay}" class="rank-icon">
+          <span>${rankName}${starDisplay}${mmr ? ` (${mmr} MMR)` : ''}</span>
+        </span>
+      `;
     }
-  };
 
-  // Получаем нужную иконку по tier и star
-  const tierIcons = iconMap[tier];
-  const iconUrl = (tierIcons && tierIcons[star]) ? tierIcons[star] : iconMap[1][1]; // fallback на Рекрут 1
-
-  // Если есть точный MMR — покажем его
-  const mmr = playerData.mmr_estimate?.estimate || playerData.solo_competitive_rank || playerData.competitive_rank || '';
-
-  return `
-    <span class="rank-badge">
-      <img src="${iconUrl}" alt="${rankName} ${starDisplay}" class="rank-icon" onerror="this.src='${iconMap[1][1]}'; this.style.opacity='0.7'">
-      <span>${rankName}${starDisplay}${mmr ? ` (${mmr} MMR)` : ''}</span>
-    </span>
-  `;
-}
+    // Variables
     let currentPage = 1, currentSearchTerm = '', currentPlayers = [];
     const elements = {
       playerInput: document.getElementById('playerInput'),
@@ -559,40 +1009,64 @@
       nextPage: document.getElementById('nextPage')
     };
 
+    // Main functions
     async function searchPlayers() {
       const playerInput = elements.playerInput.value.trim();
-      hideError(); clearElement(elements.playersList);
-      hideElement(elements.pagination); hideElement(elements.playerCard);
+      hideError();
+      clearElement(elements.playersList);
+      hideElement(elements.pagination);
+      hideElement(elements.playerCard);
       showElement(elements.loading);
-      if (!playerInput) { showError('Введите никнейм'); return; }
-      currentSearchTerm = playerInput; currentPage = 1;
-      try { await performSearch(playerInput, currentPage); }
-      catch (error) { showError(error.message || 'Ошибка поиска'); }
-      finally { hideElement(elements.loading); }
+
+      if (!playerInput) {
+        showError('Введите никнейм игрока для поиска');
+        return;
+      }
+
+      currentSearchTerm = playerInput;
+      currentPage = 1;
+
+      try {
+        await performSearch(playerInput, currentPage);
+      } catch (error) {
+        showError(error.message || 'Ошибка при поиске игроков');
+      } finally {
+        hideElement(elements.loading);
+      }
     }
 
     async function performSearch(playerName, page) {
       try {
-        const res = await fetchWithTimeout(`https://api.opendota.com/api/search?q=${encodeURIComponent(playerName)}&page=${page}`);
-        if (!res.ok) throw new Error('Не удалось выполнить поиск');
-        const data = await res.json();
+        const response = await fetchWithTimeout(
+          `https://api.opendota.com/api/search?q=${encodeURIComponent(playerName)}&page=${page}`
+        );
+        
+        if (!response.ok) throw new Error('Не удалось выполнить поиск');
+        
+        const data = await response.json();
+        
         if (!data || data.length === 0) {
           elements.playersList.innerHTML = '<p class="detail-item">Игроки не найдены</p>';
           return;
         }
+
         currentPlayers = data;
         displayPlayersList(data);
         setupPagination();
-      } catch (error) { showError(error.message); }
+      } catch (error) {
+        showError(error.message);
+      }
     }
 
     function displayPlayersList(players) {
       clearElement(elements.playersList);
+      
       players.forEach(player => {
-        const el = document.createElement('div');
-        el.className = 'player-item';
-        el.onclick = () => showPlayerStats(player.account_id);
-        el.innerHTML = `
+        const playerElement = document.createElement('div');
+        playerElement.className = 'player-card';
+        playerElement.onclick = () => showPlayerStats(player.account_id);
+        
+        playerElement.innerHTML = `
           <div class="player-header">
             <img src="${player.avatarfull || getDefaultAvatar()}" alt="Аватар" class="avatar">
             <div>
@@ -605,125 +1079,171 @@
             <div class="detail-item">Сходство: ${similarityScore(player.personaname, currentSearchTerm)}%</div>
           </div>
         `;
-        elements.playersList.appendChild(el);
+        
+        elements.playersList.appendChild(playerElement);
       });
     }
 
     async function showPlayerStats(accountId) {
-      hideError(); showElement(elements.loading); hideElement(elements.searchResults);
+      hideError();
+      showElement(elements.loading);
+      hideElement(elements.searchResults);
+      
       try {
-        const [pData, wlData, hData, rData] = await Promise.all([
+        const [playerData, winLossData, heroesData, recentMatches] = await Promise.all([
           fetchJsonWithTimeout(`https://api.opendota.com/api/players/${accountId}`),
           fetchJsonWithTimeout(`https://api.opendota.com/api/players/${accountId}/wl`),
           fetchJsonWithTimeout(`https://api.opendota.com/api/players/${accountId}/heroes`),
           fetchJsonWithTimeout(`https://api.opendota.com/api/players/${accountId}/recentMatches`)
         ]);
-        displayPlayerData(pData, wlData, hData, rData);
+        
+        displayPlayerData(playerData, winLossData, heroesData, recentMatches);
         showElement(elements.playerCard);
+        
+        // Add back button
         elements.playerCard.innerHTML = `
-          <button class="back-button" onclick="showSearchResults()">← Назад</button>
+          <button class="back-button" onclick="showSearchResults()">◀ Назад к поиску</button>
           ${elements.playerCard.innerHTML}
         `;
       } catch (error) {
-        showError(error.message || 'Ошибка загрузки данных');
-      } finally { hideElement(elements.loading); }
+        showError(error.message || 'Ошибка загрузки данных игрока');
+      } finally {
+        hideElement(elements.loading);
+      }
     }
 
-    function displayPlayerData(pData, wlData, hData, rData) {
-      const profile = pData.profile || {};
-      const total = wlData.win + wlData.lose;
-      const winRate = total > 0 ? ((wlData.win / total) * 100).toFixed(2) : 0;
-      const topHeroes = [...hData].filter(h => h.games > 0).sort((a,b) => b.games - a.games).slice(0,10);
+    function displayPlayerData(playerData, winLossData, heroesData, recentMatches) {
+      const profile = playerData.profile || {};
+      const totalGames = winLossData.win + winLossData.lose;
+      const winRate = totalGames > 0 ? ((winLossData.win / totalGames) * 100).toFixed(2) : 0;
+      const topHeroes = [...heroesData].filter(h => h.games > 0).sort((a, b) => b.games - a.games).slice(0, 10);
 
       let html = `
         <div class="profile-header">
           <img src="${profile.avatarfull || getDefaultAvatar()}" alt="Аватар" class="avatar">
           <div class="profile-info">
-            <h2 class="profile-name">
+            <h2 class="player-name">
               ${profile.personaname || 'Неизвестный игрок'}
-              ${getRankBadge(pData)}
+              ${getRankBadge(playerData)}
             </h2>
-            <p>${profile.steamid ? 'Steam ID: ' + profile.steamid : ''}</p>
-            <div class="profile-details">
-              <div class="detail-item win">Победы: ${wlData.win || 0}</div>
-              <div class="detail-item lose">Поражения: ${wlData.lose || 0}</div>
-              <div class="detail-item">Всего игр: ${total}</div>
+            <p>Steam ID: ${profile.steamid || 'Не указан'}</p>
+            <div class="player-details" style="margin-top: 15px;">
+              <div class="detail-item">Победы: ${winLossData.win || 0}</div>
+              <div class="detail-item">Поражения: ${winLossData.lose || 0}</div>
+              <div class="detail-item">Всего игр: ${totalGames}</div>
               <div class="detail-item">Винрейт: ${winRate}%</div>
             </div>
           </div>
         </div>
       `;
-      html += createHeroesTable(topHeroes);
-      html += createMatchesTable(rData);
-      elements.playerCard.innerHTML += html;
+
+      html += createHeroesSection(topHeroes);
+      html += createMatchesSection(recentMatches);
+      elements.playerCard.innerHTML = html;
     }
 
-    function createHeroesTable(heroes) {
+    function createHeroesSection(heroes) {
+      if (!heroes.length) return '';
+      
       let html = `
-        <div class="stats-section">
-          <h3 class="section-title">Топ героев</h3>
-          <table><thead><tr><th>Герой</th><th>Игры</th><th>Победы</th><th>Винрейт</th></tr></thead><tbody>
+        <h3 class="section-title">Топ Героев</h3>
+        <table class="stats-table">
+          <thead>
+            <tr>
+              <th>Герой</th>
+              <th>Игры</th>
+              <th>Победы</th>
+              <th>Винрейт</th>
+            </tr>
+          </thead>
+          <tbody>
       `;
+
       heroes.forEach(hero => {
-        const name = heroesMap[hero.hero_id] || `Герой #${hero.hero_id}`;
-        const rate = hero.games > 0 ? ((hero.win / hero.games) * 100).toFixed(1) : 0;
-        let cls = 'medium';
-        if (rate >= 55) cls = 'high';
-        else if (rate < 45) cls = 'low';
+        const heroName = heroesMap[hero.hero_id] || `Герой #${hero.hero_id}`;
+        const winRate = hero.games > 0 ? ((hero.win / hero.games) * 100).toFixed(1) : 0;
+        let rateClass = 'medium';
+        
+        if (winRate >= 55) rateClass = 'high';
+        else if (winRate < 45) rateClass = 'low';
+
         html += `
           <tr>
             <td>
-              <img src="${getHeroIconUrl(hero.hero_id)}" alt="${name}" title="${name}" class="hero-icon ${heroPrimaryAttr[hero.hero_id] || ''}" onerror="this.src='https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/unknown.png'">
-              ${name}
+              <img src="${getHeroIconUrl(hero.hero_id)}" 
+                   alt="${heroName}" 
+                   title="${heroName}" 
+                   class="hero-icon ${heroPrimaryAttr[hero.hero_id] || ''}"
+                   onerror="this.src='https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/unknown.png'">
+              ${heroName}
             </td>
             <td>${hero.games}</td>
             <td>${hero.win}</td>
-            <td><span class="win-rate ${cls}">${rate}%</span></td>
+            <td><span class="win-rate ${rateClass}">${winRate}%</span></td>
           </tr>
         `;
       });
-      html += `</tbody></table></div>`;
+
+      html += `</tbody></table>`;
       return html;
     }
 
-    function createMatchesTable(matches) {
+    function createMatchesSection(matches) {
+      if (!matches.length) return '';
+      
       let html = `
-        <div class="stats-section">
-          <h3 class="section-title">Последние матчи</h3>
-          <table><thead><tr><th>Герой</th><th>Результат</th><th>K/D/A</th><th>Длительность</th><th>Дата и время</th></tr></thead><tbody>
+        <h3 class="section-title">Последние Матчи</h3>
+        <table class="stats-table">
+          <thead>
+            <tr>
+              <th>Герой</th>
+              <th>Результат</th>
+              <th>K/D/A</th>
+              <th>Длительность</th>
+              <th>Дата</th>
+            </tr>
+          </thead>
+          <tbody>
       `;
-      matches.slice(0,10).forEach(match => {
-        const name = heroesMap[match.hero_id] || `Герой #${match.hero_id}`;
-        const isRad = match.player_slot < 128;
-        const isWin = (isRad && match.radiant_win) || (!isRad && !match.radiant_win);
-        const dur = Math.floor(match.duration / 60) + ':' + (match.duration % 60).toString().padStart(2, '0');
+
+      matches.slice(0, 10).forEach(match => {
+        const heroName = heroesMap[match.hero_id] || `Герой #${match.hero_id}`;
+        const isRadiant = match.player_slot < 128;
+        const isWin = (isRadiant && match.radiant_win) || (!isRadiant && !match.radiant_win);
+        const duration = Math.floor(match.duration / 60) + ':' + (match.duration % 60).toString().padStart(2, '0');
         const kda = (match.kills + match.assists) / (match.deaths || 1);
-        const date = new Date(match.start_time * 1000);
-        const fDate = date.toLocaleDateString('ru-RU');
-        const fTime = date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-        const rowCls = kda > 7 ? 'match-row-gold' : kda >= 3 ? 'match-row-good' : 'match-row-poor';
+        const matchDate = new Date(match.start_time * 1000);
+        const formattedDate = matchDate.toLocaleDateString('ru-RU');
+        const formattedTime = matchDate.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+
+        let rowClass = '';
+        if (kda > 7) rowClass = 'match-row-legendary';
+        else if (kda >= 3) rowClass = 'match-row-excellent';
+        else if (kda < 1.5) rowClass = 'match-row-poor';
 
         html += `
-          <tr class="${rowCls}">
+          <tr class="${rowClass}">
             <td>
-              <img src="${getHeroIconUrl(match.hero_id)}" alt="${name}" title="${name}" class="hero-icon ${heroPrimaryAttr[match.hero_id] || ''}" onerror="this.src='https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/unknown.png'">
-              ${name}
+              <img src="${getHeroIconUrl(match.hero_id)}" 
+                   alt="${heroName}" 
+                   title="${heroName}" 
+                   class="hero-icon ${heroPrimaryAttr[match.hero_id] || ''}"
+                   onerror="this.src='https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/unknown.png'">
+              ${heroName}
             </td>
             <td>
-              ${isWin ? 
-                `<span title="Победа" style="text-shadow:0 0 6px rgba(129,199,132,0.8);font-size:1.3em;">✓</span>` : 
-                `<span title="Поражение" style="text-shadow:0 0 6px rgba(229,115,115,0.8);font-size:1.3em;">✗</span>`}
+              <span class="match-result ${isWin ? 'win' : 'loss'}">
+                ${isWin ? '✓' : '✗'}
+              </span>
             </td>
-            <td>
-              ${match.kills}/${match.deaths}/${match.assists}
-              ${kda > 7 ? `<span class="emoji-gold"> 👑</span>` : kda >= 3 ? `<span class="emoji-animate"> 👌</span>` : ''}
-            </td>
-            <td>${dur}</td>
-            <td>${fDate} ${fTime}</td>
+            <td>${match.kills}/${match.deaths}/${match.assists}</td>
+            <td>${duration}</td>
+            <td>${formattedDate} ${formattedTime}</td>
           </tr>
         `;
       });
-      html += `</tbody></table></div>`;
+
+      html += `</tbody></table>`;
       return html;
     }
 
@@ -738,45 +1258,107 @@
       elements.pageInfo.textContent = `Страница ${currentPage}`;
       elements.prevPage.disabled = currentPage === 1;
       elements.nextPage.disabled = currentPlayers.length < 20;
+
       elements.prevPage.onclick = () => {
-        if (currentPage > 1) { currentPage--; performSearch(currentSearchTerm, currentPage); }
+        if (currentPage > 1) {
+          currentPage--;
+          performSearch(currentSearchTerm, currentPage);
+        }
       };
-      elements.nextPage.onclick = () => { currentPage++; performSearch(currentSearchTerm, currentPage); };
+
+      elements.nextPage.onclick = () => {
+        currentPage++;
+        performSearch(currentSearchTerm, currentPage);
+      };
     }
 
-    function showError(msg) { elements.error.textContent = msg; showElement(elements.error); }
-    function hideError() { hideElement(elements.error); }
-    function formatDate(ts) { return new Date(ts * 1000).toLocaleDateString('ru-RU'); }
-    function similarityScore(s1, s2) {
-      if (!s1 || !s2) return 0;
-      const l1 = s1.toLowerCase(), l2 = s2.toLowerCase();
-      if (l1 === l2) return 100;
-      let m = 0;
-      for (let i = 0; i < Math.min(l1.length, l2.length); i++) {
-        if (l1[i] === l2[i]) m++;
-      }
-      return Math.round((m / Math.max(l1.length, l2.length)) * 100);
+    // Utility functions
+    function showError(message) {
+      elements.error.textContent = message;
+      showElement(elements.error);
     }
+
+    function hideError() {
+      hideElement(elements.error);
+    }
+
+    function formatDate(timestamp) {
+      return new Date(timestamp * 1000).toLocaleDateString('ru-RU');
+    }
+
+    function similarityScore(str1, str2) {
+      if (!str1 || !str2) return 0;
+      const s1 = str1.toLowerCase();
+      const s2 = str2.toLowerCase();
+      if (s1 === s2) return 100;
+      
+      let matches = 0;
+      for (let i = 0; i < Math.min(s1.length, s2.length); i++) {
+        if (s1[i] === s2[i]) matches++;
+      }
+      return Math.round((matches / Math.max(s1.length, s2.length)) * 100);
+    }
+
     function getDefaultAvatar() {
       return 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb.jpg';
     }
-    function showElement(el) { el.style.display = 'block'; }
-    function hideElement(el) { el.style.display = 'none'; }
-    function clearElement(el) { el.innerHTML = ''; }
+
+    function showElement(element) {
+      element.style.display = 'block';
+    }
+
+    function hideElement(element) {
+      element.style.display = 'none';
+    }
+
+    function clearElement(element) {
+      element.innerHTML = '';
+    }
+
     async function fetchWithTimeout(url, timeout = 10000) {
-      const ctrl = new AbortController();
-      const id = setTimeout(() => ctrl.abort(), timeout);
-      const res = await fetch(url, { signal: ctrl.signal });
-      clearTimeout(id);
-      return res;
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), timeout);
+      
+      try {
+        const response = await fetch(url, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        return response;
+      } catch (error) {
+        clearTimeout(timeoutId);
+        throw error;
+      }
     }
+
     async function fetchJsonWithTimeout(url, timeout = 10000) {
-      const res = await fetchWithTimeout(url, timeout);
-      if (!res.ok) throw new Error(`Ошибка HTTP: ${res.status}`);
-      return res.json();
+      const response = await fetchWithTimeout(url, timeout);
+      if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+      return response.json();
     }
-    elements.playerInput.addEventListener('keypress', e => {
-      if (e.key === 'Enter') searchPlayers();
+
+    // Event listeners
+    elements.playerInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        searchPlayers();
+      }
+    });
+
+    // Add some dynamic particle effects on scroll
+    let ticking = false;
+    function updateParallax() {
+      const scrolled = window.pageYOffset;
+      const particles = document.querySelectorAll('.particle');
+      particles.forEach((particle, i) => {
+        const speed = 0.5 + (i % 3) * 0.2;
+        particle.style.transform = `translateY(${scrolled * speed}px)`;
+      });
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(updateParallax);
+        ticking = true;
+      }
     });
   </script>
 </body>
