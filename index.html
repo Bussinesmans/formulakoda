@@ -2,125 +2,534 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Dota 2 Статистика</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DotaStats - Российский аналог Dotabuff</title>
   <style>
+    :root {
+      --primary: #1e88e5;
+      --primary-dark: #1565c0;
+      --dark: #121212;
+      --darker: #0a0a0a;
+      --light: #f5f5f5;
+      --gray: #424242;
+      --success: #4caf50;
+      --danger: #f44336;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
     body {
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: #eee;
-      text-align: center;
-    }
-    input, button {
-      padding: 10px;
-      margin: 10px;
-      font-size: 16px;
-    }
-    .player-card {
-      margin: 20px auto;
+      background: var(--darker);
+      color: var(--light);
+      line-height: 1.6;
       padding: 20px;
-      border: 1px solid #444;
-      max-width: 600px;
-      background: #222;
-      border-radius: 8px;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), 
+                        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="%23121212" width="100" height="100"/><path fill="%23151515" d="M0 0h50v50H0z"/></svg>');
+      background-size: cover;
     }
-    img {
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      background: rgba(30, 136, 229, 0.1);
+      border-radius: 10px;
+      border: 1px solid var(--primary);
+    }
+    
+    h1 {
+      color: var(--primary);
+      margin-bottom: 10px;
+      font-size: 2.5rem;
+    }
+    
+    .subtitle {
+      color: var(--light);
+      opacity: 0.8;
+      margin-bottom: 20px;
+    }
+    
+    .search-box {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    
+    input, button {
+      padding: 12px 15px;
+      font-size: 16px;
+      border: none;
+      outline: none;
+    }
+    
+    input {
+      flex: 1;
+      min-width: 250px;
+      background: var(--dark);
+      color: var(--light);
+      border: 1px solid var(--gray);
+      border-radius: 5px 0 0 5px;
+    }
+    
+    button {
+      background: var(--primary);
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+      border-radius: 0 5px 5px 0;
+    }
+    
+    button:hover {
+      background: var(--primary-dark);
+    }
+    
+    .info-box {
+      background: rgba(30, 136, 229, 0.1);
+      padding: 15px;
+      border-radius: 5px;
+      margin: 20px 0;
+      border-left: 4px solid var(--primary);
+    }
+    
+    .player-card {
+      background: var(--dark);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+      display: none;
+    }
+    
+    .profile-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .avatar {
+      width: 80px;
+      height: 80px;
       border-radius: 50%;
+      margin-right: 20px;
+      border: 3px solid var(--primary);
     }
+    
+    .profile-info {
+      flex: 1;
+    }
+    
+    .profile-name {
+      font-size: 24px;
+      color: var(--primary);
+      margin-bottom: 5px;
+    }
+    
+    .profile-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 10px;
+    }
+    
+    .detail-item {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 8px 15px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .detail-item.win {
+      color: var(--success);
+    }
+    
+    .detail-item.lose {
+      color: var(--danger);
+    }
+    
+    .stats-section {
+      margin: 30px 0;
+    }
+    
+    .section-title {
+      color: var(--primary);
+      margin-bottom: 15px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid var(--gray);
+    }
+    
     table {
-      margin: 20px auto;
+      width: 100%;
       border-collapse: collapse;
-      width: 80%;
+      margin: 15px 0;
+      background: rgba(18, 18, 18, 0.8);
     }
-    table, th, td {
-      border: 1px solid #555;
-      padding: 8px;
+    
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid var(--gray);
     }
+    
     th {
-      background: #333;
+      background: rgba(30, 136, 229, 0.2);
+      color: var(--primary);
+    }
+    
+    tr:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    
+    .win-rate {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    
+    .win-rate.high {
+      background: rgba(76, 175, 80, 0.2);
+      color: var(--success);
+    }
+    
+    .win-rate.medium {
+      background: rgba(255, 193, 7, 0.2);
+      color: #ffc107;
+    }
+    
+    .win-rate.low {
+      background: rgba(244, 67, 54, 0.2);
+      color: var(--danger);
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 30px;
+      display: none;
+    }
+    
+    .loader {
+      border: 5px solid var(--gray);
+      border-top: 5px solid var(--primary);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .error {
+      background: rgba(244, 67, 54, 0.1);
+      color: var(--danger);
+      padding: 15px;
+      border-radius: 5px;
+      margin: 20px 0;
+      display: none;
+      border-left: 4px solid var(--danger);
+    }
+    
+    .hero-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+    
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 20px;
+      color: var(--gray);
+      font-size: 14px;
+    }
+    
+    @media (max-width: 768px) {
+      .profile-header {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .avatar {
+        margin-right: 0;
+        margin-bottom: 15px;
+      }
+      
+      .profile-details {
+        justify-content: center;
+      }
+      
+      .search-box {
+        flex-direction: column;
+      }
+      
+      input {
+        border-radius: 5px;
+        margin-bottom: 10px;
+      }
+      
+      button {
+        border-radius: 5px;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Dota 2 Статистика</h1>
-  <p>Введите <b>никнейм Steam</b> (например: Miracle):</p>
-  <input type="text" id="nickname" placeholder="Введите ник">
-  <button onclick="getStats()">Показать статистику</button>
-
-  <div id="output"></div>
+  <div class="container">
+    <header>
+      <h1>DotaStats</h1>
+      <p class="subtitle">Российский аналог Dotabuff с подробной статистикой по игрокам Dota 2</p>
+    </header>
+    
+    <div class="info-box">
+      <p>Введите никнейм Steam или Steam ID для просмотра статистики. Сервис полностью бесплатный и показывает подробную информацию об игроке.</p>
+    </div>
+    
+    <div class="search-box">
+      <input type="text" id="playerInput" placeholder="Введите никнейм или Steam ID (например: 86746653)" />
+      <button onclick="getPlayerStats()">Найти статистику</button>
+    </div>
+    
+    <div class="loading" id="loading">
+      <div class="loader"></div>
+      <p style="margin-top: 15px;">Загрузка данных...</p>
+    </div>
+    
+    <div class="error" id="error"></div>
+    
+    <div class="player-card" id="playerCard">
+      <!-- Данные игрока будут загружены здесь -->
+    </div>
+    
+    <footer>
+      <p>DotaStats — российский сервис статистики Dota 2 | Не аффилирован с Valve Corporation</p>
+      <p>Все данные предоставляются через OpenDota API</p>
+    </footer>
+  </div>
 
   <script>
-    let heroNames = {};
-
-    // Загружаем список героев сразу при запуске
-    fetch("https://api.opendota.com/api/heroes")
-      .then(r => r.json())
-      .then(data => {
-        data.forEach(h => heroNames[h.id] = h.localized_name);
-      });
-
-    async function getStats() {
-      const nickname = document.getElementById("nickname").value.trim();
-      if (!nickname) return alert("Введите ник!");
-
-      const output = document.getElementById("output");
-      output.innerHTML = "<p>Ищем игрока...</p>";
-
+    // Функция для получения статистики игрока
+    async function getPlayerStats() {
+      const playerInput = document.getElementById('playerInput').value.trim();
+      const loadingEl = document.getElementById('loading');
+      const errorEl = document.getElementById('error');
+      const playerCardEl = document.getElementById('playerCard');
+      
+      // Сбрасываем состояние
+      errorEl.style.display = 'none';
+      playerCardEl.style.display = 'none';
+      loadingEl.style.display = 'block';
+      
+      if (!playerInput) {
+        showError('Пожалуйста, введите никнейм или Steam ID');
+        return;
+      }
+      
       try {
-        // Поиск по нику
-        const searchRes = await fetch(`https://api.opendota.com/api/search?q=${encodeURIComponent(nickname)}`);
-        const searchData = await searchRes.json();
-        if (!searchData.length) throw new Error("Игрок не найден!");
-
-        const account_id = searchData[0].account_id;
-
-        // Общая инфа
-        const player = await (await fetch(`https://api.opendota.com/api/players/${account_id}`)).json();
-
-        // Герои
-        const heroes = await (await fetch(`https://api.opendota.com/api/players/${account_id}/heroes`)).json();
-
-        // Последние матчи
-        const matches = await (await fetch(`https://api.opendota.com/api/players/${account_id}/recentMatches`)).json();
-
-        // Формируем HTML
-        let html = `
-          <div class="player-card">
-            <img src="${player.profile.avatarfull}" alt="Avatar"><br>
-            <h2>${player.profile.personaname}</h2>
-            <p>MMR: ${player.mmr_estimate.estimate || "неизвестно"}</p>
-            <p>Профиль: <a href="${player.profile.profileurl}" target="_blank">Steam</a></p>
-          </div>
-        `;
-
-        // Топ герои
-        html += "<h3>Топ герои</h3><table><tr><th>Герой</th><th>Матчей</th><th>Побед</th><th>Winrate</th></tr>";
-        heroes.slice(0, 5).forEach(h => {
-          const wr = (h.win / h.games * 100).toFixed(1);
-          html += <tr><td>${heroNames[h.hero_id] || h.hero_id}</td><td>${h.games}</td><td>${h.win}</td><td>${wr}%</td></tr>;
-        });
-        html += "</table>";
-
-        // Последние матчи
-        html += "<h3>Последние матчи</h3><table><tr><th>Герой</th><th>Убийства</th><th>Смерти</th><th>Помощи</th><th>Победа</th></tr>";
-        matches.slice(0, 10).forEach(m => {
-          const win = m.radiant_win === (m.player_slot < 128);
-          html += `<tr>
-            <td>${heroNames[m.hero_id] || m.hero_id}</td>
-            <td>${m.kills}</td>
-            <td>${m.deaths}</td>
-            <td>${m.assists}</td>
-            <td>${win ? "Да" : "Нет"}</td>
-          </tr>`;
-        });
-        html += "</table>";
-
-        output.innerHTML = html;
-
-      } catch (e) {
-        output.innerHTML = "<p>Ошибка: " + e.message + "</p>";
-        console.error(e);
+        let accountId;
+        
+        // Если введены только цифры, считаем это steamId
+        if (/^\d+$/.test(playerInput)) {
+          accountId = playerInput;
+        } else {
+          // Иначе ищем по имени
+          const searchResponse = await fetchWithTimeout(`https://api.opendota.com/api/search?q=${encodeURIComponent(playerInput)}`);
+          if (!searchResponse.ok) {
+            throw new Error('Не удалось выполнить поиск. Попробуйте позже.');
+          }
+          
+          const searchData = await searchResponse.json();
+          if (!searchData || searchData.length === 0) {
+            throw new Error('Игрок с таким именем не найден');
+          }
+          
+          // Берем первого найденного игрока
+          accountId = searchData[0].account_id;
+        }
+        
+        // Получаем данные игрока
+        const [playerData, winLossData, heroesData, recentMatchesData] = await Promise.all([
+          fetchJsonWithTimeout(`https://api.opendota.com/api/players/${accountId}`),
+          fetchJsonWithTimeout(`https://api.opendota.com/api/players/${accountId}/wl`),
+          fetchJsonWithTimeout(`https://api.opendota.com/api/players/${accountId}/heroes`),
+          fetchJsonWithTimeout(`https://api.opendota.com/api/players/${accountId}/recentMatches`)
+        ]);
+        
+        // Отображаем данные игрока
+        displayPlayerData(playerData, winLossData, heroesData, recentMatchesData);
+        
+      } catch (error) {
+        showError(error.message || 'Произошла ошибка при загрузке данных. Попробуйте позже.');
+      } finally {
+        loadingEl.style.display = 'none';
       }
     }
+    
+    // Функция для отображения данных игрока
+    function displayPlayerData(playerData, winLossData, heroesData, recentMatchesData) {
+      const playerCardEl = document.getElementById('playerCard');
+      const profile = playerData.profile || {};
+      
+      // Форматируем данные
+      const totalMatches = winLossData.win + winLossData.lose;
+      const winRate = totalMatches > 0 ? ((winLossData.win / totalMatches) * 100).toFixed(2) : 0;
+      
+      // Сортируем героев по количеству игр
+      const topHeroes = [...heroesData]
+        .filter(hero => hero.games > 0)
+        .sort((a, b) => b.games - a.games)
+        .slice(0, 10);
+      
+      // Формируем HTML
+      let html = `
+        <div class="profile-header">
+          <img src="${profile.avatarfull || 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb.jpg'}" 
+               alt="Аватар" class="avatar">
+          <div class="profile-info">
+            <h2 class="profile-name">${profile.personaname || 'Неизвестный игрок'}</h2>
+            <p>${profile.steamid ? 'Steam ID: ' + profile.steamid : ''}</p>
+            <div class="profile-details">
+              <div class="detail-item win">Победы: ${winLossData.win || 0}</div>
+              <div class="detail-item lose">Поражения: ${winLossData.lose || 0}</div>
+              <div class="detail-item">Всего игр: ${totalMatches}</div>
+              <div class="detail-item">Винрейт: ${winRate}%</div>
+              ${playerData.mmr_estimate ? `<div class="detail-item">Примерный MMR: ${playerData.mmr_estimate.estimate || 'N/A'}</div>` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+      
+      // Добавляем секцию с топовыми героями
+      html += `
+        <div class="stats-section">
+          <h3 class="section-title">Топ героев</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Герой</th>
+                <th>Игры</th>
+                <th>Победы</th>
+                <th>Винрейт</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+      
+      topHeroes.forEach(hero => {
+        const heroWinRate = hero.games > 0 ? ((hero.win / hero.games) * 100).toFixed(1) : 0;
+        let winRateClass = 'medium';
+        if (heroWinRate >= 55) winRateClass = 'high';
+        else if (heroWinRate < 45) winRateClass = 'low';
+        
+        html += `
+          <tr>
+            <td>Герой #${hero.hero_id}</td>
+            <td>${hero.games}</td>
+            <td>${hero.win}</td>
+            <td><span class="win-rate ${winRateClass}">${heroWinRate}%</span></td>
+          </tr>
+        `;
+      });
+      
+      html += `
+            </tbody>
+          </table>
+        </div>
+      `;
+      
+      // Добавляем секцию с последними матчами
+      html += `
+        <div class="stats-section">
+          <h3 class="section-title">Последние матчи</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Герой</th>
+                <th>Результат</th>
+                <th>K/D/A</th>
+                <th>Длительность</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+      
+      recentMatchesData.slice(0, 10).forEach(match => {
+        const isRadiant = match.player_slot < 128;
+        const isWin = (isRadiant && match.radiant_win) || (!isRadiant && !match.radiant_win);
+        const duration = Math.floor(match.duration / 60) + ':' + (match.duration % 60).toString().padStart(2, '0');
+        
+        html += `
+          <tr>
+            <td>Герой #${match.hero_id}</td>
+            <td><span class="${isWin ? 'win-rate high' : 'win-rate low'}">${isWin ? 'Победа' : 'Поражение'}</span></td>
+            <td>${match.kills}/${match.deaths}/${match.assists}</td>
+            <td>${duration}</td>
+          </tr>
+        `;
+      });
+      
+      html += `
+            </tbody>
+          </table>
+        </div>
+      `;
+      
+      playerCardEl.innerHTML = html;
+      playerCardEl.style.display = 'block';
+    }
+    
+    // Вспомогательные функции
+    function showError(message) {
+      const errorEl = document.getElementById('error');
+      errorEl.textContent = message;
+      errorEl.style.display = 'block';
+      document.getElementById('loading').style.display = 'none';
+    }
+    
+    async function fetchWithTimeout(url, timeout = 10000) {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), timeout);
+      
+      const response = await fetch(url, {
+        signal: controller.signal
+      });
+      
+      clearTimeout(id);
+      return response;
+    }
+    
+    async function fetchJsonWithTimeout(url, timeout = 10000) {
+      const response = await fetchWithTimeout(url, timeout);
+      if (!response.ok) {
+        throw new Error(`Ошибка HTTP: ${response.status}`);
+      }
+      return response.json();
+    }
+    
+    // Обработка нажатия Enter в поле ввода
+    document.getElementById('playerInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        getPlayerStats();
+      }
+    });
   </script>
 </body>
 </html>
